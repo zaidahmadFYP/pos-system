@@ -1,4 +1,3 @@
-// src/Components/Sidebar.jsx
 import React, { useState, useEffect } from 'react';
 import { Box, IconButton, Typography, Button, Divider, Modal, Backdrop, Fade } from '@mui/material';
 import { Dashboard, Menu, People, Inventory, Receipt, TableRestaurant, BookOnline, ExitToApp } from '@mui/icons-material';

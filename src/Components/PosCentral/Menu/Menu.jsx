@@ -1,4 +1,3 @@
-// Menu.jsx
 import React from 'react';
 import { Box, Typography, IconButton, Badge, Divider, Avatar } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
