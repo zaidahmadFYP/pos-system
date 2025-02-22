@@ -5,6 +5,7 @@ import Login from './Components/Login/Login';
 import PosCentral from './Components/PosCentral/PosCental';
 import Dashboard from './Components/PosCentral/Dashboard/Dashboard';
 import Menu from './Components/PosCentral/Menu/Menu';
+import Orders from './Components/PosCentral/Orders/Orders';
 // Import other components...
 
 
@@ -17,6 +18,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="menu" element={<Menu />} />
+          <Route path="orders" element={<Orders />} />
           {/* Add other routes */}
         </Route>
       </Routes>

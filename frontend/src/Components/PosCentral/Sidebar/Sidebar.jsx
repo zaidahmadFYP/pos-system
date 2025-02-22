@@ -23,8 +23,8 @@ const Sidebar = () => {
       setSelected(4); // Select the Reports tile if the route is '/loop/reports'
     } else if (location.pathname === '/loop/orders') {
       setSelected(5); // Select the Orders tile if the route is '/loop/orders'
-    } else if (location.pathname === '/loop/reservations') {
-      setSelected(6); // Select the Reservations tile if the route is '/loop/reservations'
+    } else if (location.pathname === '/loop/poscentral') {
+      setSelected(6); // Select the poscentral tile if the route is '/loop/poscentral'
     }
   }, [location]); // Dependency on location to update when route changes
 
@@ -214,7 +214,7 @@ const Sidebar = () => {
           >
             <TableRestaurant sx={{ fontSize: 24 }} />
             <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
-              Order/Table
+              Orders
             </Typography>
           </Button>
         </Link>
@@ -222,7 +222,7 @@ const Sidebar = () => {
         <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65'  }} />
 
         {/* Reservation Tile */}
-        <Link to="/loop/reservations" style={{ textDecoration: 'none' }}>
+        <Link to="/loop/poscentral" style={{ textDecoration: 'none' }}>
           <Button
             onClick={() => handleSelect(6)}
             sx={{
@@ -236,8 +236,8 @@ const Sidebar = () => {
             }}
           >
             <BookOnline sx={{ fontSize: 24 }} />
-            <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
-              Reservation
+            <Typography variant="body2" sx={{ fontSize: '0.734rem' }}>
+              POS Portal
             </Typography>
           </Button>
         </Link>
