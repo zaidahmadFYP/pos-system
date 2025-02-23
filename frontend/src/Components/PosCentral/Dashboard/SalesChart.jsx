@@ -16,8 +16,8 @@ const SalesChart = () => {
       {
         label: 'Sales',
         data: [65, 59, 80, 81, 56, 55, 40], // Example data
-        borderColor: '#f8bbd0',
-        backgroundColor: 'rgba(248, 189, 208, 0.2)',
+        borderColor: '#f15a22',
+        backgroundColor: 'rgba(241, 90, 34, 0.2)',
         tension: 0.4,
       },
     ],
@@ -51,10 +51,10 @@ const SalesChart = () => {
                 color: '#fff',
                 fontWeight: 500,
                 '&.Mui-selected': {
-                  bgcolor: '#f8bbd0',
-                  color: '#000',
+                  bgcolor: '#f15a22', // Using the new color
+                  color: '#fff',
                   '&:hover': {
-                    bgcolor: '#f8bbd0',
+                    bgcolor: '#e14f1e', // A darker shade on hover
                   },
                 },
                 transition: 'background-color 0.3s ease, transform 0.2s',
@@ -73,10 +73,10 @@ const SalesChart = () => {
             startIcon={<Download />}
             sx={{
               color: '#fff',
-              borderColor: '#f8bbd0',
+              borderColor: '#f15a22', // Using the new color for the border
               '&:hover': {
                 borderColor: '#fff',
-                backgroundColor: '#f8bbd0',
+                backgroundColor: '#f15a22', // Using the new color for hover effect
               },
               fontWeight: 600,
               padding: '6px 12px',

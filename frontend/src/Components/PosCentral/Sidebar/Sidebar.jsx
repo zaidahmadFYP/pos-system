@@ -4,28 +4,28 @@ import { Dashboard, Menu, People, Inventory, Receipt, TableRestaurant, BookOnlin
 import { Link, useNavigate, useLocation } from 'react-router-dom'; 
 
 const Sidebar = () => {
-  const [selected, setSelected] = useState(0); // Default selected tile is Dashboard (index 0)
+  const [selected, setSelected] = useState(0); // Default selected tile is PosCentral (index 0)
   const [openLogoutModal, setOpenLogoutModal] = useState(false); // State for controlling modal visibility
   const navigate = useNavigate(); 
   const location = useLocation(); 
 
   useEffect(() => {
-    // Set the default selection to 'Dashboard' when the page loads
-    if (location.pathname === '/loop/dashboard') {
-      setSelected(0); // Select the Dashboard tile if the route is '/loop/dashboard'
+    // Set the default selection to 'PosCentral' when the page loads
+    if (location.pathname === '/loop/poscentral') {
+      setSelected(0); // Select the poscentral tile if the route is '/loop/dashboposcentral'
+    } else if (location.pathname === '/loop/dashboard') {
+      setSelected(1); // Select the dashboard tile if the route is '/loop/dashboard'
     } else if (location.pathname === '/loop/menu') {
-      setSelected(1); // Select the Menu tile if the route is '/loop/menu'
+      setSelected(2); // Select the Menu tile if the route is '/loop/menu'
     } else if (location.pathname === '/loop/staff') {
-      setSelected(2); // Select the Staff tile if the route is '/loop/staff'
+      setSelected(3); // Select the Staff tile if the route is '/loop/staff'
     } else if (location.pathname === '/loop/inventory') {
-      setSelected(3); // Select the Inventory tile if the route is '/loop/inventory'
+      setSelected(4); // Select the Inventory tile if the route is '/loop/inventory'
     } else if (location.pathname === '/loop/reports') {
-      setSelected(4); // Select the Reports tile if the route is '/loop/reports'
+      setSelected(5); // Select the Reports tile if the route is '/loop/reports'
     } else if (location.pathname === '/loop/orders') {
-      setSelected(5); // Select the Orders tile if the route is '/loop/orders'
-    } else if (location.pathname === '/loop/poscentral') {
-      setSelected(6); // Select the poscentral tile if the route is '/loop/poscentral'
-    }
+      setSelected(6); // Select the Orders tile if the route is '/loop/orders'
+    } 
   }, [location]); // Dependency on location to update when route changes
 
   const handleSelect = (index) => {
@@ -81,10 +81,13 @@ const Sidebar = () => {
         />
       </Box>
 
+      {/* ========================================================================================================= */}
+
       {/* Menu Section: Single Column with Small Tiles */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
-        {/* Dashboard Tile */}
-        <Link to="/loop/dashboard" style={{ textDecoration: 'none' }}>
+        
+        {/* PosCentral Tile */}
+        <Link to="/loop/poscentral" style={{ textDecoration: 'none' }}>
           <Button
             onClick={() => handleSelect(0)}
             sx={{
@@ -95,6 +98,29 @@ const Sidebar = () => {
               borderRadius: '12px',
               width: '100%',
               ...getSelectedStyle(0),
+            }}
+          >
+            <BookOnline sx={{ fontSize: 24 }} />
+            <Typography variant="body2" sx={{ fontSize: '0.734rem' }}>
+              POS Portal
+            </Typography>
+          </Button>
+        </Link>
+
+        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65' }} />
+        
+        {/* Dashboard Tile */}
+        <Link to="/loop/dashboard" style={{ textDecoration: 'none' }}>
+          <Button
+            onClick={() => handleSelect(1)}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              padding: '10px',
+              borderRadius: '12px',
+              width: '100%',
+              ...getSelectedStyle(1),
             }}
           >
             <Dashboard sx={{ fontSize: 24 }} />
@@ -109,7 +135,7 @@ const Sidebar = () => {
         {/* Menu Tile */}
         <Link to="/loop/menu" style={{ textDecoration: 'none' }}>
           <Button
-            onClick={() => handleSelect(1)}
+            onClick={() => handleSelect(2)}
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -117,7 +143,7 @@ const Sidebar = () => {
               padding: '10px',
               borderRadius: '12px',
               width: '100%',
-              ...getSelectedStyle(1),
+              ...getSelectedStyle(2),
             }}
           >
             <Menu sx={{ fontSize: 24 }} />
@@ -132,7 +158,7 @@ const Sidebar = () => {
         {/* Staff Tile */}
         <Link to="/loop/staff" style={{ textDecoration: 'none' }}>
           <Button
-            onClick={() => handleSelect(2)}
+            onClick={() => handleSelect(3)}
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -140,7 +166,7 @@ const Sidebar = () => {
               padding: '10px',
               borderRadius: '12px',
               width: '100%',
-              ...getSelectedStyle(2),
+              ...getSelectedStyle(3),
             }}
           >
             <People sx={{ fontSize: 24 }} />
@@ -155,7 +181,7 @@ const Sidebar = () => {
         {/* Inventory Tile */}
         <Link to="/loop/inventory" style={{ textDecoration: 'none' }}>
           <Button
-            onClick={() => handleSelect(3)}
+            onClick={() => handleSelect(4)}
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -163,7 +189,7 @@ const Sidebar = () => {
               padding: '10px',
               borderRadius: '12px',
               width: '100%',
-              ...getSelectedStyle(3),
+              ...getSelectedStyle(4),
             }}
           >
             <Inventory sx={{ fontSize: 24 }} />
@@ -178,7 +204,7 @@ const Sidebar = () => {
         {/* Reports Tile */}
         <Link to="/loop/reports" style={{ textDecoration: 'none' }}>
           <Button
-            onClick={() => handleSelect(4)}
+            onClick={() => handleSelect(5)}
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -186,7 +212,7 @@ const Sidebar = () => {
               padding: '10px',
               borderRadius: '12px',
               width: '100%',
-              ...getSelectedStyle(4),
+              ...getSelectedStyle(5),
             }}
           >
             <Receipt sx={{ fontSize: 24 }} />
@@ -201,29 +227,6 @@ const Sidebar = () => {
         {/* Order/Table Tile */}
         <Link to="/loop/orders" style={{ textDecoration: 'none' }}>
           <Button
-            onClick={() => handleSelect(5)}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: '10px',
-              borderRadius: '12px',
-              width: '100%',
-              ...getSelectedStyle(5),
-            }}
-          >
-            <TableRestaurant sx={{ fontSize: 24 }} />
-            <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
-              Orders
-            </Typography>
-          </Button>
-        </Link>
-
-        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65'  }} />
-
-        {/* Reservation Tile */}
-        <Link to="/loop/poscentral" style={{ textDecoration: 'none' }}>
-          <Button
             onClick={() => handleSelect(6)}
             sx={{
               display: 'flex',
@@ -235,13 +238,19 @@ const Sidebar = () => {
               ...getSelectedStyle(6),
             }}
           >
-            <BookOnline sx={{ fontSize: 24 }} />
-            <Typography variant="body2" sx={{ fontSize: '0.734rem' }}>
-              POS Portal
+            <TableRestaurant sx={{ fontSize: 24 }} />
+            <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
+              Orders
             </Typography>
           </Button>
         </Link>
+
+        {/* <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65'  }} /> */}
+
+        
       </Box>
+
+      {/* ========================================================================================================= */}
 
       {/* Sidebar Footer: Logout */}
       <Box sx={{ marginTop: 'auto', textAlign: 'center', marginBottom: '30px' }}>

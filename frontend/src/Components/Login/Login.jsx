@@ -1,8 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
-import { Box, Paper, Typography, Snackbar, Alert, Button, CircularProgress } from '@mui/material';
+import { Box, Paper, Typography, Snackbar, Alert, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
+import axios from 'axios';
 import UserForm from './UserForm';
 import UserDrawer from './UserDrawer';
 
@@ -19,12 +18,16 @@ const Login = () => {
 
   // Fetch users from backend when component mounts
   useEffect(() => {
-    axios.get("http://localhost:5001/api/users") // Replace with your actual API endpoint
+    axios.get('http://localhost:5001/api/users', {
+      params: {
+        role: { $in: ['Cashier', 'Manager'] }, // Filter users by role
+      },
+    })
       .then(response => {
         setUsers(response.data); // Set users from API response
       })
       .catch(error => {
-        console.error("Error fetching users:", error);
+        console.error('Error fetching users:', error);
       });
   }, []);
 
@@ -44,24 +47,24 @@ const Login = () => {
 
   const handleLogin = () => {
     if (!selectedUser || !password) return;
-  
+
     setLoading(true);
-  
+
     // Simulate login delay
     setTimeout(() => {
       if (password === selectedUser.plainPassword) {
         setLoading(false);
-        setSnackbarMessage("Successful Login!");
-        setSnackbarSeverity("success");
+        setSnackbarMessage('Successful Login!');
+        setSnackbarSeverity('success');
         setSnackbarOpen(true);
-  
+
         setTimeout(() => {
           navigate('/loop');
         }, 500);
       } else {
         setLoading(false);
-        setSnackbarMessage("Invalid Password! Please try again.");
-        setSnackbarSeverity("error");
+        setSnackbarMessage('Invalid Password! Please try again.');
+        setSnackbarSeverity('error');
         setSnackbarOpen(true);
       }
     }, 1000);

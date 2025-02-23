@@ -3,10 +3,14 @@ const router = express.Router();
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
-// Fetch users (Only send name & email)
+// Fetch users with role "Cashier" or "Manager" (Only send name, email, and plainPassword)
 router.get("/", async (req, res) => {
   try {
-    const users = await User.find({}, { name: 1, email: 1, plainPassword: 1, _id: 0 }); // Only return name & email
+    // Filter users by role "Cashier" or "Manager"
+    const users = await User.find(
+      { role: { $in: ["Cashier", "Manager"] } }, // Filter users by role
+      { name: 1, email: 1, plainPassword: 1, _id: 0 } // Only return name, email, and plainPassword
+    );
     console.log("Fetched Users:", users);
     res.status(200).json(users);
   } catch (error) {

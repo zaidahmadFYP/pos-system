@@ -8,24 +8,23 @@ const Dashboard = () => {
   return (
     <Box
       sx={{
-        height: 'auto', // Full viewport height
-        overflow: 'hidden', // Disable both vertical and horizontal scrolling
+        minHeight: '100vh', // Ensure full viewport height
+        overflow: 'hidden', // Disable scrolling on the main container
         bgcolor: '#000000',
         p: 2,
         display: 'flex',
-        flexDirection: 'column', // Ensure the content is stacked vertically
+        flexDirection: 'column', // Stack content vertically
       }}
     >
       <Grid
         container
         spacing={2}
         sx={{
-          flexGrow: 1, // Make the grid container grow to fill the available space
-          overflow: 'hidden', // Prevent scrolling inside the grid
+          flexGrow: 1, // Allow the grid to fill available space
         }}
       >
         {/* First Row - Metric Cards */}
-        <Grid item xs={12} md={4} sx={{ height: 'auto' }}>
+        <Grid item xs={12} md={4}>
           <MetricCard
             title="Daily Sales"
             value="$2k"
@@ -33,7 +32,7 @@ const Dashboard = () => {
             type="sales"
           />
         </Grid>
-        <Grid item xs={12} md={4} sx={{ height: 'auto' }}>
+        <Grid item xs={12} md={4}>
           <MetricCard
             title="Monthly Revenue"
             value="$55k"
@@ -41,7 +40,7 @@ const Dashboard = () => {
             type="revenue"
           />
         </Grid>
-        <Grid item xs={12} md={4} sx={{ height: 'auto' }}>
+        <Grid item xs={12} md={4}>
           <MetricCard
             title="Table Occupancy"
             value="25 Tables"
@@ -51,12 +50,12 @@ const Dashboard = () => {
         </Grid>
 
         {/* Second Row - Full-width Popular Dish */}
-        <Grid item xs={12} sx={{ height: 'auto' }}>
+        <Grid item xs={12}>
           <PopularItem title="Popular Dish" />
         </Grid>
 
         {/* Third Row - Sales Chart */}
-        <Grid item xs={12} sx={{ height: 'auto' }}>
+        <Grid item xs={12}>
           <SalesChart />
         </Grid>
       </Grid>
