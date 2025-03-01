@@ -38,6 +38,38 @@ const OrderSummary = ({ selectedItems = [], onClearItems, onDeleteItem }) => {
     },
   })
 
+  // Handle send to kitchen action
+  const handleSendToKitchen = async () => {
+    try {
+      const orderData = {
+        selectedItems: selectedItems,
+        total: total,
+        selectedPaymentMethod: selectedPaymentMethod,
+      };
+    
+      // Use environment variable for the API URL
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/transactions/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+      
+      // Rest of your function remains the same
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Failed to send order:", errorText);
+        return;
+      }
+    
+      const result = await response.json();
+      console.log(result.message);
+      onClearItems();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   return (
     <Box
       sx={{
@@ -136,6 +168,7 @@ const OrderSummary = ({ selectedItems = [], onClearItems, onDeleteItem }) => {
             ...createDisabledStyle("#FFA500"),
           }}
           disabled={!selectedPaymentMethod}
+          onClick={handleSendToKitchen}
         >
           SEND TO KITCHEN
         </Button>
@@ -160,4 +193,3 @@ const OrderSummary = ({ selectedItems = [], onClearItems, onDeleteItem }) => {
 }
 
 export default OrderSummary
-
