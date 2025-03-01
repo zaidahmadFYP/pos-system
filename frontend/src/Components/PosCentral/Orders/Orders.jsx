@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { menuCategories } from './MenuData';
-import MainMenuGrid from './MainMenuGrid';
-import MenuGrid from './MenuGrid';
-import OrderTypeGrid from './OrderTypeGrid';
-import OrderSummary from './OrderSummary'; // Import the new table component
+"use client"
+
+import { useState } from "react"
+import { Box, Button, Typography } from "@mui/material"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
+import { menuCategories } from "./MenuData"
+import MainMenuGrid from "./MainMenuGrid"
+import MenuGrid from "./MenuGrid"
+import OrderTypeGrid from "./OrderTypeGrid"
+import OrderSummary from "./OrderSummary"
 
 const Orders = () => {
   const [menuState, setMenuState] = useState({
@@ -57,6 +59,16 @@ const Orders = () => {
       // If item doesn't exist, add it with quantity 1
       setSelectedItems([...selectedItems, { ...item, quantity: 1 }])
     }
+  }
+
+  // Handle clearing all items
+  const handleClearItems = () => {
+    setSelectedItems([])
+  }
+
+  // Handle deleting individual item
+  const handleDeleteItem = (itemId) => {
+    setSelectedItems(selectedItems.filter((item) => item.id !== itemId))
   }
 
   const buttonStyle = {
@@ -132,7 +144,7 @@ const Orders = () => {
       </Box>
 
       {/* Order Summary Panel */}
-      <OrderSummary selectedItems={selectedItems} />
+      <OrderSummary selectedItems={selectedItems} onClearItems={handleClearItems} onDeleteItem={handleDeleteItem} />
     </Box>
   )
 }
