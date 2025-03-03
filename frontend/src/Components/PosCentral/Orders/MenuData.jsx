@@ -10,7 +10,7 @@ export const fetchMenuCategories = async () => {
     return response.data
   } catch (error) {
     console.error("Error fetching menu categories:", error)
-    throw error // Let's throw the error to handle it in the component
+    throw error //Error handling
   }
 }
 

@@ -24,7 +24,7 @@ const Orders = () => {
         setLoading(true)
         setError(null)
         const data = await fetchMenuCategories()
-        console.log("Fetched menu data:", data) // Add this for debugging
+        console.log("Fetched menu data:", data) // Degbugging
         setMenuCategories(data)
       } catch (error) {
         console.error("Error loading menu data:", error)
@@ -37,6 +37,7 @@ const Orders = () => {
     loadMenuData()
   }, [])
 
+  
   const handleToggleMenu = () => {
     setMenuState({
       showMenu: !menuState.showMenu,
@@ -144,7 +145,7 @@ const Orders = () => {
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
           <Typography variant="h5">Orders</Typography>
         </Box>
-
+        {/* ================================================================================================================================= */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, position: "relative", alignItems: "flex-start" }}>
           <Button variant="contained" sx={buttonStyle} onClick={handleToggleMenu}>
             Quick Menu
@@ -161,6 +162,8 @@ const Orders = () => {
           </Button>
         </Box>
 
+         {/* ================================================================================================================================= */}
+
         {menuState.showMenu && !menuState.orderType && <OrderTypeGrid onOrderTypeSelect={handleOrderTypeSelect} />}
 
         {menuState.showMenu && menuState.orderType && !menuState.activeCategory && (
@@ -170,6 +173,7 @@ const Orders = () => {
             onPreviousMenu={handlePreviousMenu}
           />
         )}
+         {/* ================================================================================================================================= */}
 
         {menuState.showMenu && menuState.orderType && activeCategory && (
           <MenuGrid
@@ -184,8 +188,11 @@ const Orders = () => {
           />
         )}
       </Box>
+       {/* ================================================================================================================================= */}
 
       <OrderSummary selectedItems={selectedItems} onClearItems={handleClearItems} onDeleteItem={handleDeleteItem} />
+
+       {/* ================================================================================================================================= */}
     </Box>
   )
 }

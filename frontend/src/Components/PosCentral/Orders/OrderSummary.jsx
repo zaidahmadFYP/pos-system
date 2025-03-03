@@ -30,7 +30,7 @@ const OrderSummary = ({ selectedItems = [], onClearItems, onDeleteItem }) => {
     fontSize: "0.9rem",
   }
 
-  // Common disabled button style pattern
+  // disabled button style pattern
   const createDisabledStyle = (baseColor) => ({
     "&.Mui-disabled": {
       backgroundColor: `${baseColor}4D`, // 30% opacity version of the color
@@ -38,7 +38,7 @@ const OrderSummary = ({ selectedItems = [], onClearItems, onDeleteItem }) => {
     },
   })
 
-  // Handle send to kitchen action
+  // Send order to the kitchen
   const handleSendToKitchen = async () => {
     try {
       const orderData = {
@@ -47,7 +47,7 @@ const OrderSummary = ({ selectedItems = [], onClearItems, onDeleteItem }) => {
         selectedPaymentMethod: selectedPaymentMethod,
       };
     
-     // Send the order data to the backend
+     // Send order to the server
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/transactions/order`, {
         method: "POST",
         headers: {
