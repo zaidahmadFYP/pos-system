@@ -1,8 +1,39 @@
+import { useState } from "react"
 import { Box } from "@mui/material"
 import MenuButton from "./MenuButton"
 
 const MenuGrid = ({ category, onItemClick, onPreviousMenu }) => {
-    return (
+  const [selectedPizza, setSelectedPizza] = useState(null)
+
+  const handleItemClick = (item) => {
+    if (item.isPizza) {
+      setSelectedPizza(item)
+    } else {
+      onItemClick(item)
+    }
+  }
+
+  const handleSizeSelect = (size) => {
+    if (selectedPizza) {
+      const sizeMultipliers = {
+        Small: 1,
+        Medium: 1.5,
+        Large: 2,
+      }
+
+      const itemWithSize = {
+        ...selectedPizza,
+        name: `${selectedPizza.name} (${size})`,
+        price: selectedPizza.price * sizeMultipliers[size],
+        size: size.toLowerCase(),
+      }
+      onItemClick(itemWithSize)
+      setSelectedPizza(null)
+    }
+  }
+
+  return (
+    <>
       <Box
         sx={{
           display: "grid",
@@ -20,13 +51,34 @@ const MenuGrid = ({ category, onItemClick, onPreviousMenu }) => {
             key={item.id}
             label={item.name}
             smallText={category.smallText}
-            onClick={() => onItemClick && onItemClick(item)}
+            onClick={() => handleItemClick(item)}
           />
         ))}
         <MenuButton label="Previous Menu" onClick={onPreviousMenu} />
       </Box>
-    )
-  }
-  
-  export default MenuGrid
+
+      {selectedPizza && (
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 2,
+            mt: 0,
+            position: "absolute",
+            left: 450,
+            top: 87,
+            zIndex: 1,
+          }}
+        >
+          <MenuButton label="Small" onClick={() => handleSizeSelect("Small")} />
+          <MenuButton label="Medium" onClick={() => handleSizeSelect("Medium")} />
+          <MenuButton label="Large" onClick={() => handleSizeSelect("Large")} />
+          <MenuButton label="Cancel" onClick={() => setSelectedPizza(null)} />
+        </Box>
+      )}
+    </>
+  )
+}
+
+export default MenuGrid
 

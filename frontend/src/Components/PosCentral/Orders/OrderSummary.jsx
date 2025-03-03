@@ -47,7 +47,7 @@ const OrderSummary = ({ selectedItems = [], onClearItems, onDeleteItem }) => {
         selectedPaymentMethod: selectedPaymentMethod,
       };
     
-      // Use environment variable for the API URL
+     // Send the order data to the backend
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/transactions/order`, {
         method: "POST",
         headers: {
@@ -56,7 +56,7 @@ const OrderSummary = ({ selectedItems = [], onClearItems, onDeleteItem }) => {
         body: JSON.stringify(orderData),
       });
       
-      // Rest of your function remains the same
+      // Handle response
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Failed to send order:", errorText);
