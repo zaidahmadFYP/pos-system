@@ -46,3 +46,5 @@ export const deleteMenuItem = async (id) => {
     throw error
   }
 }
+
+

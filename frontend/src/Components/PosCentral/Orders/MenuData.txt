@@ -196,3 +196,83 @@ export const menuCategories = [
   ]
   
   
+
+Arabic Spin Roll
+Behari Spin Roll
+Calzone Chunks
+Cheezy Sticks
+Flaming Wings 6pc
+Flaming Wings 12pcm
+Oven Baked Wings 12pc
+Oven Baked Wings 6pc
+Small Pizza Deal
+Regular Pizza Deal
+Large Pizza Deal
+Reggy Burger
+Bazinga
+Behari Kebab Pizza
+Cheezious Special Pizza
+Chicken Extreme Pizza
+Crown Crust
+Stuffed Crust
+Beef Pepperoni
+Stuffed Cheese Pizza
+Chicken Nuggets 5PCS
+Fried Chicken 1PCS
+Fried Chicken 3PCS
+Regular Fries
+Large Fries
+Black Pepper Pizza
+Cheese Lover Pizza
+Chicken Mushroom Pizza
+Chicken Supreme Pizza
+Euro Pizza
+Pepperoni Pizza
+Sausage Pizza
+Crunchy Chicken Pasta
+Fettuccine Alfredo Pasta
+S.Amazing Deal-1 (2 Bazinga + Fries + 2 Drinks)
+S.Amazing Deal-2 (2 Bazinga + Chic Pcs + Large Fries + 2 Drinks)
+S.Amazing Deal-3 (3 Bazinga + Large Fries + 1L Drink)
+S.Amazing Deal-4 (3 Bazinga + Chic Pcs + 1L Drink)
+Chicken Fajita Pizza
+Chicken Lover Pizza
+Chicken Tandoori Pizza
+Chicken Tikka Pizza
+Hot n Spicy Pizza
+Vegetable Pizza
+Chocolate Double Scoop IceCream
+King Kulfa Double Scoop IceCream
+Mango Double Scoop IceCream
+Tutti Fruity Icecream Double Scoop Icecream
+Strawberry Double Scoop IceCream
+Vanilla Double Scoop IceCream
+Special Roasted Plater
+Mexican Sandwich
+Pizza Stacker
+Classic Roll Plater
+Euro Sandwich
+Classic Roll Plater 2
+Bihari Sandwich
+Arabic Roll Plater
+Bazooka
+7UP
+Pepsi
+Marinda
+Regular
+NR
+Murree
+250ML Juice
+Aquafina 500ML
+Extra Tikka
+Extra Black Pepper
+Extra Cheese
+Extra Fajita
+Extra Grilled/Smoke
+Extra Jamaican
+Extra Mughlai
+Deal With Addition of (Reg Drink & Reg Fries)
+Mayo Dip Sauce (Pack)
+Cheese Cake
+Cake
+Milk Cake

@@ -156,7 +156,7 @@ const Sidebar = () => {
         <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65'  }} />
 
         {/* Staff Tile */}
-        <Link to="/loop/staff" style={{ textDecoration: 'none' }}>
+        {/* <Link to="/loop/staff" style={{ textDecoration: 'none' }}>
           <Button
             onClick={() => handleSelect(3)}
             sx={{
@@ -174,9 +174,9 @@ const Sidebar = () => {
               Staff
             </Typography>
           </Button>
-        </Link>
+        </Link> */}
 
-        <Divider sx={{ borderColor: '#808080', margin: '0px auto',width:'0.65'  }} />
+        {/* <Divider sx={{ borderColor: '#808080', margin: '0px auto',width:'0.65'  }} /> */}
 
         {/* Inventory Tile */}
         <Link to="/loop/inventory" style={{ textDecoration: 'none' }}>
