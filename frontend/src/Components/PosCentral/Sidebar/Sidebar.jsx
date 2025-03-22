@@ -1,32 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { Box, IconButton, Typography, Button, Divider, Modal, Backdrop, Fade } from '@mui/material';
 import { Dashboard, Menu, People, Inventory, Receipt, TableRestaurant, BookOnline, ExitToApp } from '@mui/icons-material';
-import { Link, useNavigate, useLocation } from 'react-router-dom'; 
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Sidebar = () => {
-  const [selected, setSelected] = useState(0); // Default selected tile is PosCentral (index 0)
-  const [openLogoutModal, setOpenLogoutModal] = useState(false); // State for controlling modal visibility
-  const navigate = useNavigate(); 
-  const location = useLocation(); 
+  const [selected, setSelected] = useState(0);
+  const [openLogoutModal, setOpenLogoutModal] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    // Set the default selection to 'PosCentral' when the page loads
     if (location.pathname === '/loop/poscentral') {
-      setSelected(0); // Select the poscentral tile if the route is '/loop/dashboposcentral'
+      setSelected(0);
     } else if (location.pathname === '/loop/dashboard') {
-      setSelected(1); // Select the dashboard tile if the route is '/loop/dashboard'
+      setSelected(1);
     } else if (location.pathname === '/loop/menu') {
-      setSelected(2); // Select the Menu tile if the route is '/loop/menu'
+      setSelected(2);
     } else if (location.pathname === '/loop/staff') {
-      setSelected(3); // Select the Staff tile if the route is '/loop/staff'
+      setSelected(3);
     } else if (location.pathname === '/loop/inventory') {
-      setSelected(4); // Select the Inventory tile if the route is '/loop/inventory'
+      setSelected(4);
     } else if (location.pathname === '/loop/reports') {
-      setSelected(5); // Select the Reports tile if the route is '/loop/reports'
+      setSelected(5);
     } else if (location.pathname === '/loop/orders') {
-      setSelected(6); // Select the Orders tile if the route is '/loop/orders'
-    } 
-  }, [location]); // Dependency on location to update when route changes
+      setSelected(6);
+    }
+  }, [location]);
 
   const handleSelect = (index) => {
     setSelected(index);
@@ -45,23 +44,23 @@ const Sidebar = () => {
   };
 
   const handleLogoutClick = () => {
-    setOpenLogoutModal(true); 
+    setOpenLogoutModal(true);
   };
 
   const handleCloseModal = () => {
-    setOpenLogoutModal(false); 
+    setOpenLogoutModal(false);
   };
 
   const handleConfirmLogout = () => {
-    setOpenLogoutModal(false); 
-    navigate('/'); // Redirect to login page
+    setOpenLogoutModal(false);
+    navigate('/');
   };
 
   return (
     <Box
       sx={{
-        width: { xs: 80, sm: 100 },
-        height: 'auto-vh',
+        width: { xs: 80, sm: 100 }, // Consistent width
+        height: '100vh', // Fix: Use valid height value
         backgroundColor: '#1f1f1f',
         borderRadius: '0 12px 12px 12px',
         padding: { xs: '5px', sm: '10px' },
@@ -70,6 +69,9 @@ const Sidebar = () => {
         justifyContent: 'space-between',
         overflow: 'hidden',
         alignItems: 'center',
+        position: 'fixed', // Fix the sidebar in place
+        top: 0,
+        left: 0,
       }}
     >
       {/* Sidebar Header with Logo */}
@@ -81,11 +83,8 @@ const Sidebar = () => {
         />
       </Box>
 
-      {/* ========================================================================================================= */}
-
       {/* Menu Section: Single Column with Small Tiles */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
-        
         {/* PosCentral Tile */}
         <Link to="/loop/poscentral" style={{ textDecoration: 'none' }}>
           <Button
@@ -107,8 +106,8 @@ const Sidebar = () => {
           </Button>
         </Link>
 
-        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65' }} />
-        
+        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width: '0.65' }} />
+
         {/* Dashboard Tile */}
         <Link to="/loop/dashboard" style={{ textDecoration: 'none' }}>
           <Button
@@ -130,7 +129,7 @@ const Sidebar = () => {
           </Button>
         </Link>
 
-        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65' }} />
+        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width: '0.65' }} />
 
         {/* Menu Tile */}
         <Link to="/loop/menu" style={{ textDecoration: 'none' }}>
@@ -153,30 +152,7 @@ const Sidebar = () => {
           </Button>
         </Link>
 
-        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65'  }} />
-
-        {/* Staff Tile */}
-        {/* <Link to="/loop/staff" style={{ textDecoration: 'none' }}>
-          <Button
-            onClick={() => handleSelect(3)}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: '10px',
-              borderRadius: '12px',
-              width: '100%',
-              ...getSelectedStyle(3),
-            }}
-          >
-            <People sx={{ fontSize: 24 }} />
-            <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
-              Staff
-            </Typography>
-          </Button>
-        </Link> */}
-
-        {/* <Divider sx={{ borderColor: '#808080', margin: '0px auto',width:'0.65'  }} /> */}
+        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width: '0.65' }} />
 
         {/* Inventory Tile */}
         <Link to="/loop/inventory" style={{ textDecoration: 'none' }}>
@@ -199,7 +175,7 @@ const Sidebar = () => {
           </Button>
         </Link>
 
-        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65'  }} />
+        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width: '0.65' }} />
 
         {/* Reports Tile */}
         <Link to="/loop/reports" style={{ textDecoration: 'none' }}>
@@ -222,7 +198,7 @@ const Sidebar = () => {
           </Button>
         </Link>
 
-        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65'  }} />
+        <Divider sx={{ borderColor: '#808080', margin: '0px auto', width: '0.65' }} />
 
         {/* Order/Table Tile */}
         <Link to="/loop/orders" style={{ textDecoration: 'none' }}>
@@ -244,13 +220,7 @@ const Sidebar = () => {
             </Typography>
           </Button>
         </Link>
-
-        {/* <Divider sx={{ borderColor: '#808080', margin: '0px auto', width:'0.65'  }} /> */}
-
-        
       </Box>
-
-      {/* ========================================================================================================= */}
 
       {/* Sidebar Footer: Logout */}
       <Box sx={{ marginTop: 'auto', textAlign: 'center', marginBottom: '30px' }}>
