@@ -43,7 +43,7 @@ const CategoryTiles = ({ setSelectedCategory = () => {}, selectedCategory, setLo
     const fetchCategories = async () => {
       try {
         setLoadingCategories(true); // Set loading to true at the start of the fetch
-        const response = await fetch('http://localhost:5001/api/menu/categories', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/menu/categories`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

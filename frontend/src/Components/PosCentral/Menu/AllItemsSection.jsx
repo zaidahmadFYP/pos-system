@@ -13,7 +13,7 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory, setLoadingItem
     const fetchItems = async () => {
       try {
         setLoadingItems(true); // Set loading to true at the start of the fetch
-        const response = await fetch('http://localhost:5001/api/menu/finishedgoods', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/menu/finishedgoods`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
