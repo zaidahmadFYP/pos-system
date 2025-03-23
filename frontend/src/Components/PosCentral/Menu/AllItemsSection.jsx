@@ -7,6 +7,7 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showOutOfStock, setShowOutOfStock] = useState(false);
   const tableContainerRef = useRef(null);
 
   useEffect(() => {
@@ -44,44 +45,45 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
   }, []);
 
   useEffect(() => {
-    if (!selectedCategory) {
-      setFilteredData(items);
-    } else {
-      const filtered = items.filter((item) => {
-        return item.categoryName === selectedCategory.name;
-      });
-      setFilteredData(filtered);
+    let filtered = [...items];
+
+    if (selectedCategory) {
+      filtered = filtered.filter((item) => item.categoryName === selectedCategory.name);
     }
 
-    console.log('Filtered data length:', filteredData.length);
+    if (searchTerm) {
+      const value = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter((item) => {
+        const nameMatch = item.name.toLowerCase().includes(value);
+        const idMatch = item.id.toLowerCase().includes(value);
+        return nameMatch || idMatch;
+      });
+    }
+
+    if (showOutOfStock) {
+      filtered = filtered.filter((item) => item.stock === 0);
+    }
+
+    setFilteredData(filtered);
+
+    console.log('Filtered data length:', filtered.length);
     if (tableContainerRef.current) {
       console.log('TableContainer height:', tableContainerRef.current.offsetHeight);
     }
-  }, [selectedCategory, items, filteredData]);
+  }, [selectedCategory, items, searchTerm, showOutOfStock]);
 
   const handleSearch = (event) => {
-    const value = event.target.value.toLowerCase().trim();
-    setSearchTerm(value);
-
-    if (!value) {
-      setFilteredData(selectedCategory ? items.filter((item) => item.categoryName === selectedCategory.name) : items);
-      return;
-    }
-
-    const filtered = items.filter((item) => {
-      const nameMatch = item.name.toLowerCase().includes(value);
-      const idMatch = item.id.toLowerCase().includes(value);
-      const categoryMatch = !selectedCategory || item.categoryName === selectedCategory.name;
-      return (nameMatch || idMatch) && categoryMatch;
-    });
-
-    setFilteredData(filtered);
+    setSearchTerm(event.target.value);
   };
 
   const clearFilter = () => {
     setSearchTerm('');
-    setFilteredData(items);
+    setShowOutOfStock(false);
     setSelectedCategory(null);
+  };
+
+  const toggleOutOfStock = () => {
+    setShowOutOfStock((prev) => !prev);
   };
 
   if (loading) {
@@ -130,7 +132,7 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
           <Button
             variant="contained"
             sx={{
-              backgroundColor: '#f15a22',
+              backgroundColor: showOutOfStock ? '#e14d0a' : '#f15a22',
               color: 'white',
               borderRadius: 2,
               padding: '4px 10px',
@@ -139,53 +141,9 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
                 backgroundColor: '#e14d0a',
               },
             }}
+            onClick={toggleOutOfStock}
           >
-            Discounted Items
-          </Button>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: '#f15a22',
-              color: 'white',
-              borderRadius: '2px',
-              padding: '4px 10px',
-              marginRight: 1,
-              '&:hover': {
-                backgroundColor: '#e14d0a',
-              },
-            }}
-          >
-            New Arrivals
-          </Button>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: '#f15a22',
-              color: 'white',
-              borderRadius: 2,
-              padding: '4px 10px',
-              marginRight: 1,
-              '&:hover': {
-                backgroundColor: '#e14d0a',
-              },
-            }}
-          >
-            Out of Stock
-          </Button>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: '#f15a22',
-              color: 'white',
-              borderRadius: 2,
-              padding: '4px 10px',
-              marginRight: 1,
-              '&:hover': {
-                backgroundColor: '#e14d0a',
-              },
-            }}
-          >
-            Best Sellers
+            {showOutOfStock ? 'Show All' : 'Out of Stock'}
           </Button>
         </Box>
 
@@ -230,16 +188,19 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
         sx={{
           mt: 4,
           flex: 1,
-          height: isScrollable ? 'auto' : 'fit-content', // Shrink to fit content when not scrollable
-          maxHeight: isScrollable ? '300px' : 'none', // Fixed height only when scrollable
-          overflow: isScrollable ? 'auto' : 'visible', // Scroll only when needed
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <TableContainer
           ref={tableContainerRef}
           sx={{
             backgroundColor: '#000',
-            height: isScrollable ? 'auto' : 'fit-content', // Shrink to fit content when not scrollable
+            maxHeight: isScrollable ? '300px' : 'none',
+            overflowY: 'auto',
+            flex: 1,
+            borderRadius: '8px',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
           }}
         >
           <Table
@@ -251,16 +212,19 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
             aria-label="product table"
           >
             <TableHead>
-              <TableRow sx={{ backgroundColor: '#333', color: '#f15a22' }}>
+              <TableRow
+                sx={{
+                  backgroundColor: '#333',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', // Keep the shadow for visual distinction
+                }}
+              >
                 <TableCell
                   sx={{
                     border: '1px solid #444',
-                    padding: '12px',
+                    padding: '12px 16px',
                     color: '#f15a22',
                     fontWeight: 'bold',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 1,
+                    fontSize: '1rem',
                     backgroundColor: '#333',
                   }}
                 >
@@ -270,12 +234,10 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
                   align="left"
                   sx={{
                     border: '1px solid #444',
-                    padding: '12px',
+                    padding: '12px 16px',
                     color: '#f15a22',
                     fontWeight: 'bold',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 1,
+                    fontSize: '1rem',
                     backgroundColor: '#333',
                   }}
                 >
@@ -285,27 +247,10 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
                   align="left"
                   sx={{
                     border: '1px solid #444',
-                    padding: '12px',
+                    padding: '12px 16px',
                     color: '#f15a22',
                     fontWeight: 'bold',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 1,
-                    backgroundColor: '#333',
-                  }}
-                >
-                  Stock
-                </TableCell>
-                <TableCell
-                  align="left"
-                  sx={{
-                    border: '1px solid #444',
-                    padding: '12px',
-                    color: '#f15a22',
-                    fontWeight: 'bold',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 1,
+                    fontSize: '1rem',
                     backgroundColor: '#333',
                   }}
                 >
@@ -315,12 +260,10 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
                   align="left"
                   sx={{
                     border: '1px solid #444',
-                    padding: '12px',
+                    padding: '12px 16px',
                     color: '#f15a22',
                     fontWeight: 'bold',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 1,
+                    fontSize: '1rem',
                     backgroundColor: '#333',
                   }}
                 >
@@ -330,12 +273,10 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
                   align="left"
                   sx={{
                     border: '1px solid #444',
-                    padding: '12px',
+                    padding: '12px 16px',
                     color: '#f15a22',
                     fontWeight: 'bold',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 1,
+                    fontSize: '1rem',
                     backgroundColor: '#333',
                   }}
                 >
@@ -344,32 +285,76 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredData.map((row) => (
+              {filteredData.map((row, index) => (
                 <TableRow
                   key={row.id || row._id}
                   sx={{
+                    backgroundColor: index % 2 === 0 ? '#1a1a1a' : '#222',
                     '&:hover': {
                       backgroundColor: '#444',
                       cursor: 'pointer',
                     },
                   }}
                 >
-                  <TableCell component="th" scope="row" sx={{ color: 'white', border: '1px solid #444', padding: '12px', whiteSpace: 'nowrap' }}>
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    sx={{
+                      color: 'white',
+                      border: '1px solid #444',
+                      padding: '12px 16px',
+                      whiteSpace: 'nowrap',
+                      fontSize: '0.95rem',
+                    }}
+                  >
                     {row.name}
                   </TableCell>
-                  <TableCell align="left" sx={{ color: 'white', border: '1px solid #444', padding: '12px', whiteSpace: 'nowrap' }}>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      color: 'white',
+                      border: '1px solid #444',
+                      padding: '12px 16px',
+                      whiteSpace: 'nowrap',
+                      fontSize: '0.95rem',
+                    }}
+                  >
                     {row.id}
                   </TableCell>
-                  <TableCell align="left" sx={{ color: 'white', border: '1px solid #444', padding: '12px', whiteSpace: 'nowrap' }}>
-                    {row.stock}
-                  </TableCell>
-                  <TableCell align="left" sx={{ color: 'white', border: '1px solid #444', padding: '12px', whiteSpace: 'nowrap' }}>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      color: 'white',
+                      border: '1px solid #444',
+                      padding: '12px 16px',
+                      whiteSpace: 'nowrap',
+                      fontSize: '0.95rem',
+                    }}
+                  >
                     {row.categoryName}
                   </TableCell>
-                  <TableCell align="left" sx={{ color: 'white', border: '1px solid #444', padding: '12px', whiteSpace: 'nowrap' }}>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      color: 'white',
+                      border: '1px solid #444',
+                      padding: '12px 16px',
+                      whiteSpace: 'nowrap',
+                      fontSize: '0.95rem',
+                    }}
+                  >
                     {row.price}
                   </TableCell>
-                  <TableCell align="left" sx={{ color: 'white', border: '1px solid #444', padding: '12px', whiteSpace: 'nowrap' }}>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      color: row.stock > 0 ? 'white' : '#ff4444',
+                      border: '1px solid #444',
+                      padding: '12px 16px',
+                      whiteSpace: 'nowrap',
+                      fontSize: '0.95rem',
+                    }}
+                  >
                     {row.stock > 0 ? 'In Stock' : 'Out of Stock'}
                   </TableCell>
                 </TableRow>

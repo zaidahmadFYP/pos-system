@@ -1,36 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Paper, Box, Typography, ButtonBase } from '@mui/material';
-import GroceryIcon from '@mui/icons-material/Store';
-import BeveragesIcon from '@mui/icons-material/LocalDrink';
-import PersonalCareIcon from '@mui/icons-material/Spa';
-import HouseholdItemsIcon from '@mui/icons-material/LocalLaundryService';
-import ElectronicsIcon from '@mui/icons-material/Devices';
-import StationeryIcon from '@mui/icons-material/Create';
-import HealthIcon from '@mui/icons-material/HealthAndSafety';
+import FastfoodIcon from '@mui/icons-material/Fastfood'; // For general food items
+import LocalPizzaIcon from '@mui/icons-material/LocalPizza'; // For pizza-related categories
+import RestaurantIcon from '@mui/icons-material/Restaurant'; // For starters or general dining
+import LocalDrinkIcon from '@mui/icons-material/LocalDrink'; // For drinks
+import CakeIcon from '@mui/icons-material/Cake'; // For desserts and sweetness
+import DinnerDiningIcon from '@mui/icons-material/DinnerDining'; // For platters, wraps, or pasta
+import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage'; // For cheezy treats or snacks
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu'; // For side orders or addons
+import StarIcon from '@mui/icons-material/Star'; // For "Somewhat Sooper" or "Amazing"
 
 const iconMap = {
-  'Grocery': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Beverages': <BeveragesIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Personal Care': <PersonalCareIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Household Items': <HouseholdItemsIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Electronics': <ElectronicsIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Stationery': <StationeryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Health & Wellness': <HealthIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Starters': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Pizza Deals': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Burgerz': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Cheezy Treats': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Special Pizza': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Side Order': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Somewhat Sooper': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Pasta': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Somewhat Local': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Sweetness': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Platters & Wraps': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Drinks': <BeveragesIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Addons': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Desserts': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  'Amazing': <GroceryIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Starters': <RestaurantIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Pizza Deals': <LocalPizzaIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Burgerz': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Cheezy Treats': <EmojiFoodBeverageIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Special Pizza': <LocalPizzaIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Side Order': <RestaurantMenuIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Somewhat Sooper': <StarIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Pasta': <DinnerDiningIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Somewhat Local': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Sweetness': <CakeIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Platters & Wraps': <DinnerDiningIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Drinks': <LocalDrinkIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Addons': <RestaurantMenuIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Desserts': <CakeIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Amazing': <StarIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  // Fallback for any other categories not explicitly defined
+  'Grocery': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Beverages': <LocalDrinkIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Personal Care': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Household Items': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Electronics': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Stationery': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
+  'Health & Wellness': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
 };
 
 const CategoryTiles = ({ setSelectedCategory = () => {}, selectedCategory }) => {
@@ -74,7 +77,6 @@ const CategoryTiles = ({ setSelectedCategory = () => {}, selectedCategory }) => 
   const handleTileClick = (category) => {
     console.log('Clicked category:', category);
     console.log('Current selectedCategory:', selectedCategory);
-    // Toggle selection: if the same category is clicked, deselect it
     const categoryId = category.categoryId || category._id || category.id;
     const selectedCategoryId = selectedCategory ? (selectedCategory.categoryId || selectedCategory._id || selectedCategory.id) : null;
     if (selectedCategory && selectedCategoryId === categoryId) {
@@ -97,13 +99,11 @@ const CategoryTiles = ({ setSelectedCategory = () => {}, selectedCategory }) => 
   }
 
   return (
-    <Box sx={{ overflow: 'hidden', flexShrink: 0 }}>
+    <Box sx={{ flexShrink: 0 }}>
       <Grid container spacing={2}>
         {categories.map((category) => {
-          // Log the category and selectedCategory for debugging
           console.log('Rendering category:', category);
           console.log('Comparing with selectedCategory:', selectedCategory);
-          // Handle different possible ID properties
           const categoryId = category.categoryId || category._id || category.id;
           const selectedCategoryId = selectedCategory ? (selectedCategory.categoryId || selectedCategory._id || selectedCategory.id) : null;
           const isSelected = selectedCategory && selectedCategoryId === categoryId;
@@ -126,6 +126,7 @@ const CategoryTiles = ({ setSelectedCategory = () => {}, selectedCategory }) => 
                   '&:hover': {
                     transform: 'scale(1.1)',
                     cursor: 'pointer',
+                    zIndex: 1,
                   },
                 }}
               >
@@ -142,7 +143,7 @@ const CategoryTiles = ({ setSelectedCategory = () => {}, selectedCategory }) => 
                   }}
                 >
                   <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
-                    {iconMap[category.name] || <GroceryIcon sx={{ fontSize: 30, color: '#f15a22' }} />}
+                    {iconMap[category.name] || <FastfoodIcon sx={{ fontSize: 30, color: '#f15a22' }} />}
                   </Box>
                   <Box sx={{ position: 'absolute', bottom: 25, left: 10, right: 10 }}>
                     <Typography
