@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
-const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
+const AllItemsSection = ({ selectedCategory, setSelectedCategory, setLoadingItems }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [items, setItems] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showOutOfStock, setShowOutOfStock] = useState(false);
   const tableContainerRef = useRef(null);
@@ -13,6 +12,7 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
+        setLoadingItems(true); // Set loading to true at the start of the fetch
         const response = await fetch('http://localhost:5001/api/menu/finishedgoods', {
           method: 'GET',
           headers: {
@@ -33,16 +33,16 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
 
         setItems(data);
         setFilteredData(data);
-        setLoading(false);
+        setLoadingItems(false); // Set loading to false when done
       } catch (error) {
         console.error('Fetch error:', error);
         setError(error.message);
-        setLoading(false);
+        setLoadingItems(false); // Set loading to false on error
       }
     };
 
     fetchItems();
-  }, []);
+  }, [setLoadingItems]);
 
   useEffect(() => {
     let filtered = [...items];
@@ -86,10 +86,6 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
     setShowOutOfStock((prev) => !prev);
   };
 
-  if (loading) {
-    return <Typography>Loading items...</Typography>;
-  }
-
   if (error) {
     return <Typography color="error">Error: {error}</Typography>;
   }
@@ -103,7 +99,6 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden',
       }}
     >
       <Typography variant="h6" sx={{ color: '#fff' }}>
@@ -215,7 +210,7 @@ const AllItemsSection = ({ selectedCategory, setSelectedCategory }) => {
               <TableRow
                 sx={{
                   backgroundColor: '#333',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', // Keep the shadow for visual distinction
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
                 }}
               >
                 <TableCell

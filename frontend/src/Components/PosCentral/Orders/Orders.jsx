@@ -1,89 +1,92 @@
-import { useState, useEffect } from "react"
-import { Box, Button, Typography, CircularProgress, Alert } from "@mui/material"
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
-import { fetchMenuCategories } from "./MenuData"
-import MainMenuGrid from "./MainMenuGrid"
-import MenuGrid from "./MenuGrid"
-import OrderTypeGrid from "./OrderTypeGrid"
-import OrderSummary from "./OrderSummary"
+import { useState, useEffect } from "react";
+import { Box, Button, Typography, CircularProgress, Alert } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { fetchMenuCategories } from "./MenuData";
+import MainMenuGrid from "./MainMenuGrid";
+import MenuGrid from "./MenuGrid";
+import OrderTypeGrid from "./OrderTypeGrid";
+import OrderSummary from "./OrderSummary";
 
 const Orders = () => {
   const [menuState, setMenuState] = useState({
     showMenu: false,
     orderType: null,
     activeCategory: null,
-  })
-  const [selectedItems, setSelectedItems] = useState([])
-  const [menuCategories, setMenuCategories] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  });
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [menuCategories, setMenuCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadMenuData = async () => {
       try {
-        setLoading(true)
-        setError(null)
-        const data = await fetchMenuCategories()
-        console.log("Fetched menu data:", data) // Degbugging
-        setMenuCategories(data)
+        setLoading(true);
+        setError(null);
+        const data = await fetchMenuCategories();
+        console.log("Fetched menu data:", data); // Debugging
+        setMenuCategories(data);
       } catch (error) {
-        console.error("Error loading menu data:", error)
-        setError(error.message || "Failed to load menu data")
+        console.error("Error loading menu data:", error);
+        setError(error.message || "Failed to load menu data");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    loadMenuData()
-  }, [])
+    loadMenuData();
+  }, []);
 
-  
   const handleToggleMenu = () => {
     setMenuState({
       showMenu: !menuState.showMenu,
       orderType: null,
       activeCategory: null,
-    })
-  }
+    });
+  };
 
   const handleOrderTypeSelect = (orderType) => {
     setMenuState({
       ...menuState,
       orderType: orderType,
-    })
-  }
+    });
+  };
 
   const handleCategoryClick = (categoryId) => {
     setMenuState({
       ...menuState,
       activeCategory: categoryId,
-    })
-  }
+    });
+  };
 
   const handlePreviousMenu = () => {
     setMenuState({
       ...menuState,
       orderType: null,
-    })
-  }
+    });
+  };
 
   const handleItemSelect = (item) => {
-    const existingItem = selectedItems.find((i) => i.id === item.id)
+    const existingItem = selectedItems.find((i) => i.id === item.id);
 
     if (existingItem) {
-      setSelectedItems(selectedItems.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)))
+      setSelectedItems(
+        selectedItems.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        )
+      );
     } else {
-      setSelectedItems([...selectedItems, { ...item, quantity: 1 }])
+      setSelectedItems([...selectedItems, { ...item, quantity: 1 }]);
     }
-  }
+  };
 
   const handleClearItems = () => {
-    setSelectedItems([])
-  }
+    setSelectedItems([]);
+  };
 
   const handleDeleteItem = (itemId) => {
-    setSelectedItems(selectedItems.filter((item) => item.id !== itemId))
-  }
+    setSelectedItems(selectedItems.filter((item) => item.id !== itemId));
+  };
 
   const buttonStyle = {
     backgroundColor: "#FFA500",
@@ -97,27 +100,32 @@ const Orders = () => {
     wordWrap: "break-word",
     whiteSpace: "normal",
     fontSize: "0.75rem",
-  }
+  };
 
   const activeCategory = menuState.activeCategory
     ? menuCategories.find((cat) => cat.id === menuState.activeCategory)
-    : null
+    : null;
 
   if (loading) {
     return (
       <Box
         sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.8)", // Semi-transparent black overlay
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
-          backgroundColor: "#121212",
-          color: "white",
+          zIndex: 1000, // Ensure it’s above other content
         }}
       >
-        <CircularProgress />
+        <CircularProgress sx={{ color: "#f15a22" }} size={60} />
       </Box>
-    )
+    );
   }
 
   if (error) {
@@ -136,7 +144,7 @@ const Orders = () => {
           {error}
         </Alert>
       </Box>
-    )
+    );
   }
 
   return (
@@ -162,7 +170,7 @@ const Orders = () => {
           </Button>
         </Box>
 
-         {/* ================================================================================================================================= */}
+        {/* ================================================================================================================================= */}
 
         {menuState.showMenu && !menuState.orderType && <OrderTypeGrid onOrderTypeSelect={handleOrderTypeSelect} />}
 
@@ -173,7 +181,7 @@ const Orders = () => {
             onPreviousMenu={handlePreviousMenu}
           />
         )}
-         {/* ================================================================================================================================= */}
+        {/* ================================================================================================================================= */}
 
         {menuState.showMenu && menuState.orderType && activeCategory && (
           <MenuGrid
@@ -182,19 +190,19 @@ const Orders = () => {
               setMenuState({
                 ...menuState,
                 activeCategory: null,
-              })
+              });
             }}
             onItemClick={handleItemSelect}
           />
         )}
       </Box>
-       {/* ================================================================================================================================= */}
+      {/* ================================================================================================================================= */}
 
       <OrderSummary selectedItems={selectedItems} onClearItems={handleClearItems} onDeleteItem={handleDeleteItem} />
 
-       {/* ================================================================================================================================= */}
+      {/* ================================================================================================================================= */}
     </Box>
-  )
-}
+  );
+};
 
-export default Orders
+export default Orders;

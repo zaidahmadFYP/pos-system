@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Paper, Box, Typography, ButtonBase } from '@mui/material';
-import FastfoodIcon from '@mui/icons-material/Fastfood'; // For general food items
-import LocalPizzaIcon from '@mui/icons-material/LocalPizza'; // For pizza-related categories
-import RestaurantIcon from '@mui/icons-material/Restaurant'; // For starters or general dining
-import LocalDrinkIcon from '@mui/icons-material/LocalDrink'; // For drinks
-import CakeIcon from '@mui/icons-material/Cake'; // For desserts and sweetness
-import DinnerDiningIcon from '@mui/icons-material/DinnerDining'; // For platters, wraps, or pasta
-import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage'; // For cheezy treats or snacks
-import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu'; // For side orders or addons
-import StarIcon from '@mui/icons-material/Star'; // For "Somewhat Sooper" or "Amazing"
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import LocalDrinkIcon from '@mui/icons-material/LocalDrink';
+import CakeIcon from '@mui/icons-material/Cake';
+import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
+import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+import StarIcon from '@mui/icons-material/Star';
 
 const iconMap = {
   'Starters': <RestaurantIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
@@ -26,7 +26,6 @@ const iconMap = {
   'Addons': <RestaurantMenuIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
   'Desserts': <CakeIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
   'Amazing': <StarIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
-  // Fallback for any other categories not explicitly defined
   'Grocery': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
   'Beverages': <LocalDrinkIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
   'Personal Care': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
@@ -36,14 +35,14 @@ const iconMap = {
   'Health & Wellness': <FastfoodIcon sx={{ fontSize: 40, color: '#f15a22' }} />,
 };
 
-const CategoryTiles = ({ setSelectedCategory = () => {}, selectedCategory }) => {
+const CategoryTiles = ({ setSelectedCategory = () => {}, selectedCategory, setLoadingCategories }) => {
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        setLoadingCategories(true); // Set loading to true at the start of the fetch
         const response = await fetch('http://localhost:5001/api/menu/categories', {
           method: 'GET',
           headers: {
@@ -63,16 +62,16 @@ const CategoryTiles = ({ setSelectedCategory = () => {}, selectedCategory }) => 
         }
 
         setCategories(data);
-        setLoading(false);
+        setLoadingCategories(false); // Set loading to false when done
       } catch (error) {
         console.error('Fetch error:', error);
         setError(error.message);
-        setLoading(false);
+        setLoadingCategories(false); // Set loading to false on error
       }
     };
 
     fetchCategories();
-  }, []);
+  }, [setLoadingCategories]);
 
   const handleTileClick = (category) => {
     console.log('Clicked category:', category);
@@ -85,10 +84,6 @@ const CategoryTiles = ({ setSelectedCategory = () => {}, selectedCategory }) => 
       setSelectedCategory(category);
     }
   };
-
-  if (loading) {
-    return <Typography>Loading categories...</Typography>;
-  }
 
   if (error) {
     return <Typography color="error">Error: {error}</Typography>;
