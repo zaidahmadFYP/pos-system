@@ -9,49 +9,54 @@ const CounterSchema = new mongoose.Schema({
 const Counter = mongoose.model('Counter', CounterSchema);
 
 const TransactionSchema = new mongoose.Schema({
-    transactionID: { 
-      type: String,  // Changed from Number to String
-      unique: true
-    },
-    items: [
-        {
-            itemId: String, // Item ID
-            itemName: String, // Item Name
-            itemQuantity: Number, // Item Quantity
-        }
-    ],
-    total: Number, // Total amount
-    paymentMethod: String, // Payment method (e.g., cash or credit)
-    date: { type: Date, default: Date.now }, // Date of transaction
+  transactionID: { 
+    type: String,
+    unique: true
+  },
+  items: [
+    {
+      itemId: String,
+      itemName: String,
+      itemQuantity: Number,
+      price: Number, // Add price field for each item
+    }
+  ],
+  total: Number,
+  paymentMethod: String,
+  date: { type: Date, default: Date.now },
+  orderPunched: { type: String, enum: ['yes', 'no'], default: 'no' }, // New field: yes/no
+  paidStatus: { type: String, enum: ['paid', 'not paid'], default: 'not paid' }, // New field: paid/not paid
+  transactionStatus: { 
+    type: String, 
+    enum: ['processed', 'suspended'], 
+    default: 'processed' // Default to "processed" when a transaction is created
+  }, // New field: processed/suspended
 });
 
 TransactionSchema.pre('save', async function(next) {
-    try {
-      if (!this.transactionID) {
-        // Find the counter document - if it doesn't exist, create it with starting number 110000
-        let counter = await Counter.findById('transactionID');
-        
-        if (!counter) {
-          counter = await Counter.create({ _id: 'transactionID', seq: 110000 });
-        } else {
-          counter = await Counter.findByIdAndUpdate(
-            { _id: 'transactionID' },
-            { $inc: { seq: 1 } },
-            { new: true }
-          );
-        }
-        
-        // Set the transaction ID to the counter value, ensuring it's a 6-digit number
-        const transactionID = counter.seq.toString().padStart(6, '0'); // Ensures 6 digits with leading zeros
-        
-        this.transactionID = transactionID;
+  try {
+    if (!this.transactionID) {
+      let counter = await Counter.findById('transactionID');
+      
+      if (!counter) {
+        counter = await Counter.create({ _id: 'transactionID', seq: 110000 });
+      } else {
+        counter = await Counter.findByIdAndUpdate(
+          { _id: 'transactionID' },
+          { $inc: { seq: 1 } },
+          { new: true }
+        );
       }
-      next();
-    } catch (error) {
-      console.error("Error generating transaction ID:", error);
-      next(error);
+      
+      const transactionID = counter.seq.toString().padStart(6, '0');
+      this.transactionID = transactionID;
     }
-  });
+    next();
+  } catch (error) {
+    console.error("Error generating transaction ID:", error);
+    next(error);
+  }
+});
 
 const Transaction = mongoose.model('Transaction', TransactionSchema);
 

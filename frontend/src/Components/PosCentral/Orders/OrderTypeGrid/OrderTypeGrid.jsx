@@ -1,5 +1,5 @@
 import { Box } from "@mui/material"
-import MenuButton from "./MenuButton"
+import MenuButton from "../MenuButton/MenuButton"
 
 const OrderTypeGrid = ({ onOrderTypeSelect }) => {
   return (

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Box } from "@mui/material"
-import MenuButton from "./MenuButton"
+import MenuButton from "../MenuButton/MenuButton"
 
 const MenuGrid = ({ category, onItemClick, onPreviousMenu }) => {
   const [selectedPizza, setSelectedPizza] = useState(null)

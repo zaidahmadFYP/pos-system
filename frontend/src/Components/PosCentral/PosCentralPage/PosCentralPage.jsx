@@ -1,360 +1,78 @@
-import React from 'react';
-import { Box, Typography, Paper, Button, Divider } from '@mui/material';
+import React, { useState, useContext, useEffect } from 'react';
+import { Box, Drawer } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import Header from './Header/Header';
+import LeftColumn from './LeftColumn/LeftColumn';
+import CenterColumn from './CenterColumn/CenterColumn';
+import RightColumn from './RightColumn/RightColumn';
+import DrawerContent from './DrawerContent/DrawerContent/DrawerContent';
+import { UserContext } from '../../../context/UserContext';
 
 const PosCentralPage = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const { employeeName } = useContext(UserContext);
+  const nameToUse = employeeName || 'Unknown User';
+  const [refreshKey, setRefreshKey] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('Employee Name in PosCentralPage (from context, useEffect):', nameToUse);
+  }, [nameToUse]);
+
+  const toggleDrawer = (task) => () => {
+    setSelectedTask(task);
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
+    setSelectedTask(null);
+    setRefreshKey((prev) => prev + 1);
+  };
+
+  const handleNavigation = (path) => {
+    navigate(`/loop/${path}`); // Update to use the correct nested path
+  };
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        height: '100vh',
-        backgroundColor: '#121212',
-        p: 3, // Margin equivalent
-        color: 'white',
-        overflowY: 'auto', // Enable vertical scrolling
-      }}
-    >
-      <Box sx={{ flexGrow: 1, overflowY: 'auto', ml: 1, mr: 3 }}>
-        {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, ml: 2.1 }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#f15a22', fontFamily:'TanseekModernW20-bold' }}>
-            POS CENTRAL HUB
-          </Typography>
-        </Box>
-
-
-
-        {/* 3 Column Layout */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          {/* Column 1 (Left) */}
-          <Box sx={{ flex: '0 0 600px', p: 2, textAlign: 'left', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            {/* Paper Component in the Center of Column 1 */}
-            <Paper
-              sx={{
-                width: 600,
-                height: 600,
-                backgroundColor: '#1f1f1f',
-                borderRadius: 3, // Rounded corners
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 3,
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)', // Adding a shadow effect
-              }}
-            >
-              {/* Image in the Paper */}
-              <img
-                src="/images/loop_banner.png" // Make sure to place the image in the public/images folder
-                alt="Content"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  borderRadius: 3,
-                  boxShadow: '0px 4px 20px rgba(255, 255, 255, 0.1)', // Adding subtle white shadow
-                }}
-              />
-            </Paper>
-          </Box>
-
-          {/* Column 2 (Center) */}
-          <Box sx={{ flex: 1, p: 2, textAlign: 'center' }}>
-            {/* Paper component containing POS ACTIONS and buttons */}
-            <Paper
-              sx={{
-                backgroundColor: '#1f1f1f',
-                borderRadius: 3, // Rounded corners
-                padding: 3,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 3,
-                height: '100%', // Stretch paper to take full height of column
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)', // Adding shadow to the paper
-              }}
-            >
-              {/* POS ACTIONS Heading inside the Paper */}
-              <Typography variant="h5" sx={{ color: '#f15a22', fontWeight: 'bold', fontFamily:'Cocon' }}>
-                POS ACTIONS
-              </Typography>
-
-              <Divider sx={{ borderColor: '#808080', margin: '3px auto', width: '0.65' }} />
-
-              {/* POS Actions Buttons */}
-              <Button
-                sx={{
-                  backgroundColor: '#f15a22',
-                  color: 'white',
-                  padding: '16px',
-                  textTransform: 'none',
-                  borderRadius: 2,
-                  '&:hover': {
-                    backgroundColor: '#d14c1b',
-                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)', // Hover shadow effect
-                    transform: 'scale(1.1)', // Expanding effect
-                  },
-                  fontWeight: 'bold',
-                  minWidth: '200px', // Ensuring buttons are consistently sized
-                  transition: 'transform 0.15s ease-in-out', // Transition for smooth expand effect
-                }}
-              >
-                SELECT HARDWARE STATION
-              </Button>
-              <Button
-                sx={{
-                  backgroundColor: '#f15a22',
-                  color: 'white',
-                  padding: '16px',
-                  textTransform: 'none',
-                  borderRadius: 2,
-                  '&:hover': {
-                    backgroundColor: '#d14c1b',
-                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-                    transform: 'scale(1.1)',
-                  },
-                  fontWeight: 'bold',
-                  minWidth: '200px',
-                  transition: 'transform 0.15s ease-in-out',
-                }}
-              >
-                SHOW JOURNAL
-              </Button>
-              <Button
-                sx={{
-                  backgroundColor: '#f15a22',
-                  color: 'white',
-                  padding: '16px',
-                  textTransform: 'none',
-                  borderRadius: 2,
-                  '&:hover': {
-                    backgroundColor: '#d14c1b',
-                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-                    transform: 'scale(1.1)',
-                  },
-                  fontWeight: 'bold',
-                  minWidth: '200px',
-                  transition: 'transform 0.15s ease-in-out',
-                }}
-              >
-                SUSPEND TRANSACTION
-              </Button>
-              <Button
-                sx={{
-                  backgroundColor: '#f15a22',
-                  color: 'white',
-                  padding: '16px',
-                  textTransform: 'none',
-                  borderRadius: 2,
-                  '&:hover': {
-                    backgroundColor: '#d14c1b',
-                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-                    transform: 'scale(1.1)',
-                  },
-                  fontWeight: 'bold',
-                  minWidth: '200px',
-                  transition: 'transform 0.15s ease-in-out',
-                }}
-              >
-                RECALL TRANSACTION
-              </Button>
-            </Paper>
-          </Box>
-
-          {/* Column 3 (Right) */}
-          <Box sx={{ flex: 1, p: 2, textAlign: 'center' }}>
-            {/* Paper component containing TASKS and buttons */}
-            <Paper
-              sx={{
-                backgroundColor: '#1f1f1f',
-                borderRadius: 3, // Rounded corners
-                padding: 3,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 3,
-                height: '100%',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)', // Adding shadow to paper
-              }}
-            >
-              {/* TASKS Heading inside the Paper */}
-              <Typography variant="h5" sx={{ color: '#f15a22', fontWeight: 'bold', fontFamily:'Cocon' }}>
-                TASKS
-              </Typography>
-
-              <Divider sx={{ borderColor: '#808080', margin: '3px auto', width: '0.65' }} />
-
-              {/* 2 Column Layout for Tasks */}
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)', // 2 equal columns
-                  gap: 2,
-                }}
-              >
-                {/* Task Buttons */}
-                <Button
-                  sx={{
-                    backgroundColor: '#f15a22',
-                    color: 'white',
-                    padding: '20px',
-                    textTransform: 'none',
-                    borderRadius: 2,
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '120px',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: '#d14c1b',
-                      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-                      transform: 'scale(1.1)', // Expanding effect
-                    },
-                    transition: 'transform 0.15s ease-in-out',
-                  }}
-                >
-                  STARTING AMOUNT
-                </Button>
-                <Button
-                  sx={{
-                    backgroundColor: '#f15a22',
-                    color: 'white',
-                    padding: '20px',
-                    textTransform: 'none',
-                    borderRadius: 2,
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '120px',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: '#d14c1b',
-                      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-                      transform: 'scale(1.1)',
-                    },
-                    transition: 'transform 0.15s ease-in-out',
-                  }}
-                >
-                  SYSTEM HEALTH CHECK
-                </Button>
-                <Button
-                  sx={{
-                    backgroundColor: '#f15a22',
-                    color: 'white',
-                    padding: '20px',
-                    textTransform: 'none',
-                    borderRadius: 2,
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '120px',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: '#d14c1b',
-                      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-                      transform: 'scale(1.1)',
-                    },
-                    transition: 'transform 0.15s ease-in-out',
-                  }}
-                >
-                  PRINT X REPORT
-                </Button>
-                <Button
-                  sx={{
-                    backgroundColor: '#f15a22',
-                    color: 'white',
-                    padding: '20px',
-                    textTransform: 'none',
-                    borderRadius: 2,
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '120px',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: '#d14c1b',
-                      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-                      transform: 'scale(1.1)',
-                    },
-                    transition: 'transform 0.15s ease-in-out',
-                  }}
-                >
-                  PRINT Z REPORT
-                </Button>
-                <Button
-                  sx={{
-                    backgroundColor: '#f15a22',
-                    color: 'white',
-                    padding: '20px',
-                    textTransform: 'none',
-                    borderRadius: 2,
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '120px',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: '#d14c1b',
-                      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-                      transform: 'scale(1.1)',
-                    },
-                    transition: 'transform 0.15s ease-in-out',
-                  }}
-                >
-                  DATABASE CONNECTION STATUS
-                </Button>
-                <Button
-                  sx={{
-                    backgroundColor: '#f15a22',
-                    color: 'white',
-                    padding: '20px',
-                    textTransform: 'none',
-                    borderRadius: 2,
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '120px',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: '#d14c1b',
-                      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-                      transform: 'scale(1.1)',
-                    },
-                    transition: 'transform 0.15s ease-in-out',
-                  }}
-                >
-                  FLOAT ENTRY
-                </Button>
-                <Button
-                  sx={{
-                    backgroundColor: '#f15a22',
-                    color: 'white',
-                    padding: '20px',
-                    textTransform: 'none',
-                    borderRadius: 2,
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '120px',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: '#d14c1b',
-                      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-                      transform: 'scale(1.1)',
-                    },
-                    transition: 'transform 0.15s ease-in-out',
-                  }}
-                >
-                  OPEN DRAWER
-                </Button>
-              </Box>
-            </Paper>
-          </Box>
-        </Box>
+    <Box sx={{ p: 3, color: 'white', height: '100%', overflowY: 'auto' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Header />
       </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <LeftColumn />
+        <CenterColumn toggleDrawer={toggleDrawer} handleNavigation={handleNavigation} />
+        <RightColumn toggleDrawer={toggleDrawer} refreshKey={refreshKey} />
+      </Box>
+
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={handleCloseDrawer}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: '20%',
+            boxSizing: 'border-box',
+            height: '100vh',
+            overflowY: 'hidden',
+            overflowX: 'hidden',
+            background: 'linear-gradient(180deg, #1f1f1f 0%, #2a2a2a 100%)',
+            boxShadow: '0 0 15px rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: 2,
+          },
+        }}
+      >
+        <DrawerContent
+          selectedTask={selectedTask}
+          onClose={handleCloseDrawer}
+          employeeName={nameToUse}
+        />
+      </Drawer>
     </Box>
   );
 };

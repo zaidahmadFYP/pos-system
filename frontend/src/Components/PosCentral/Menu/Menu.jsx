@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton, Badge, Divider, Avatar, CircularProgress } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import AllItemsSection from './AllItemsSection';
-import CategoryTiles from './CategoryTile';
+import AllItemsSection from './AllItemsSection/AllItemsSection';
+import CategoryTiles from './CategoryTile/CategoryTile';
 
 const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);

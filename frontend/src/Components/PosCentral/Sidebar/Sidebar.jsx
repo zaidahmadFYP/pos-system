@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Box, IconButton, Typography, Button, Divider, Modal, Backdrop, Fade } from '@mui/material';
-import { Dashboard, Menu, People, Inventory, Receipt, TableRestaurant, BookOnline, ExitToApp } from '@mui/icons-material';
+import { Dashboard, Menu, Inventory, Receipt, TableRestaurant, BookOnline, ExitToApp } from '@mui/icons-material';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { UserContext } from '../../../context/UserContext';
 
 const Sidebar = () => {
   const [selected, setSelected] = useState(0);
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { employeeName, setEmployeeName } = useContext(UserContext);
 
   useEffect(() => {
     if (location.pathname === '/loop/poscentral') {
@@ -51,7 +53,42 @@ const Sidebar = () => {
     setOpenLogoutModal(false);
   };
 
-  const handleConfirmLogout = () => {
+  const handleConfirmLogout = async () => {
+    const nameToUse = employeeName || localStorage.getItem('employeeName');
+    const currentTime = new Date().toTimeString().split(' ')[0]; // HH:MM:SS
+
+    try {
+      if (nameToUse) {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/posreports/close`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            employeeName: nameToUse,
+            closingTime: currentTime,
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to close POS report');
+        }
+
+        if (data.status === 'completed') {
+          // Shift completed, clear context and localStorage
+          setEmployeeName(null);
+          localStorage.removeItem('employeeName');
+        }
+        // If shift not complete, keep context/localStorage intact
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Proceed with logout even if there's an error, assuming it's safe to clear
+      setEmployeeName(null);
+      localStorage.removeItem('employeeName');
+    }
+
     setOpenLogoutModal(false);
     navigate('/');
   };
@@ -59,8 +96,8 @@ const Sidebar = () => {
   return (
     <Box
       sx={{
-        width: { xs: 80, sm: 100 }, // Consistent width
-        height: '100vh', // Fix: Use valid height value
+        width: { xs: 80, sm: 100 },
+        height: '100vh',
         backgroundColor: '#1f1f1f',
         borderRadius: '0 12px 12px 12px',
         padding: { xs: '5px', sm: '10px' },
@@ -69,7 +106,7 @@ const Sidebar = () => {
         justifyContent: 'space-between',
         overflow: 'hidden',
         alignItems: 'center',
-        position: 'fixed', // Fix the sidebar in place
+        position: 'fixed',
         top: 0,
         left: 0,
       }}
@@ -85,7 +122,6 @@ const Sidebar = () => {
 
       {/* Menu Section: Single Column with Small Tiles */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
-        {/* PosCentral Tile */}
         <Link to="/loop/poscentral" style={{ textDecoration: 'none' }}>
           <Button
             onClick={() => handleSelect(0)}
@@ -108,7 +144,6 @@ const Sidebar = () => {
 
         <Divider sx={{ borderColor: '#808080', margin: '0px auto', width: '0.65' }} />
 
-        {/* Dashboard Tile */}
         <Link to="/loop/dashboard" style={{ textDecoration: 'none' }}>
           <Button
             onClick={() => handleSelect(1)}
@@ -131,7 +166,6 @@ const Sidebar = () => {
 
         <Divider sx={{ borderColor: '#808080', margin: '0px auto', width: '0.65' }} />
 
-        {/* Menu Tile */}
         <Link to="/loop/menu" style={{ textDecoration: 'none' }}>
           <Button
             onClick={() => handleSelect(2)}
@@ -154,7 +188,6 @@ const Sidebar = () => {
 
         <Divider sx={{ borderColor: '#808080', margin: '0px auto', width: '0.65' }} />
 
-        {/* Inventory Tile */}
         <Link to="/loop/inventory" style={{ textDecoration: 'none' }}>
           <Button
             onClick={() => handleSelect(4)}
@@ -177,7 +210,6 @@ const Sidebar = () => {
 
         <Divider sx={{ borderColor: '#808080', margin: '0px auto', width: '0.65' }} />
 
-        {/* Reports Tile */}
         <Link to="/loop/reports" style={{ textDecoration: 'none' }}>
           <Button
             onClick={() => handleSelect(5)}
@@ -200,7 +232,6 @@ const Sidebar = () => {
 
         <Divider sx={{ borderColor: '#808080', margin: '0px auto', width: '0.65' }} />
 
-        {/* Order/Table Tile */}
         <Link to="/loop/orders" style={{ textDecoration: 'none' }}>
           <Button
             onClick={() => handleSelect(6)}

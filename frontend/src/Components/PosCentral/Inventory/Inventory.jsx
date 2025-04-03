@@ -41,31 +41,31 @@ const Inventory = () => {
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
 
   //helper function to extract ObjectId value - DONT CHANGE
-  const getIdFromObjectId = (idObject) => {
-    // Debugging log to see what's coming in
-    console.log("getIdFromObjectId input:", idObject);
+  // const getIdFromObjectId = (idObject) => {
+  //   // Debugging log to see what's coming in
+  //   console.log("getIdFromObjectId input:", idObject);
     
-    if (!idObject) return null;
+  //   if (!idObject) return null;
     
-    // If it's already a string, return it
-    if (typeof idObject === 'string') return idObject;
+  //   // If it's already a string, return it
+  //   if (typeof idObject === 'string') return idObject;
     
-    // If it has $oid property (MongoDB format), return that value
-    if (idObject.$oid) return idObject.$oid;
+  //   // If it has $oid property (MongoDB format), return that value
+  //   if (idObject.$oid) return idObject.$oid;
     
-    // If it's a regular object with _id property
-    if (idObject._id) {
-      // If _id is an object with $oid
-      if (typeof idObject._id === 'object' && idObject._id.$oid) {
-        return idObject._id.$oid;
-      }
-      // If _id is a string
-      return idObject._id;
-    }
+  //   // If it's a regular object with _id property
+  //   if (idObject._id) {
+  //     // If _id is an object with $oid
+  //     if (typeof idObject._id === 'object' && idObject._id.$oid) {
+  //       return idObject._id.$oid;
+  //     }
+  //     // If _id is a string
+  //     return idObject._id;
+  //   }
     
-    // Last resort, stringify the object and use as is
-    return String(idObject);
-  };
+  //   // Last resort, stringify the object and use as is
+  //   return String(idObject);
+  // };
 
   // Fetch data from backend on component mount
   useEffect(() => {

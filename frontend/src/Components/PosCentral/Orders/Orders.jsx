@@ -1,22 +1,51 @@
 import { useState, useEffect } from "react";
 import { Box, Button, Typography, CircularProgress, Alert } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { fetchMenuCategories } from "./MenuData";
-import MainMenuGrid from "./MainMenuGrid";
-import MenuGrid from "./MenuGrid";
-import OrderTypeGrid from "./OrderTypeGrid";
-import OrderSummary from "./OrderSummary";
+import { fetchMenuCategories } from "./MenuData/MenuData";
+import MainMenuGrid from "./MainMenuGrid/MainMenuGrid";
+import MenuGrid from "./MenuGrid/MenuGrid";
+import OrderTypeGrid from "./OrderTypeGrid/OrderTypeGrid";
+import OrderSummary from "./OrderSummary/OrderSummary";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Orders = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [menuState, setMenuState] = useState({
     showMenu: false,
     orderType: null,
     activeCategory: null,
   });
-  const [selectedItems, setSelectedItems] = useState([]);
+  
+  const [selectedItems, setSelectedItems] = useState(() => {
+    const recalledTransaction = location.state?.recalledTransaction;
+    const items = recalledTransaction ? recalledTransaction.items : [];
+    console.log("Initial selectedItems in Orders:", items);
+    return items;
+  });
+  
   const [menuCategories, setMenuCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  const [initialPaymentMethod, setInitialPaymentMethod] = useState(() => {
+    const recalledTransaction = location.state?.recalledTransaction;
+    return recalledTransaction ? recalledTransaction.paymentMethod : null;
+  });
+
+  // Update selectedItems and payment method when recalledTransaction changes
+  useEffect(() => {
+    const recalledTransaction = location.state?.recalledTransaction;
+    if (recalledTransaction && recalledTransaction.items) {
+      console.log("Updating selectedItems with recalled transaction:", recalledTransaction.items);
+      setSelectedItems(recalledTransaction.items);
+      setInitialPaymentMethod(recalledTransaction.paymentMethod);
+    } else {
+      // Reset when recalledTransaction is null
+      setSelectedItems([]);
+      setInitialPaymentMethod(null);
+    }
+  }, [location.state?.recalledTransaction]);
 
   useEffect(() => {
     const loadMenuData = async () => {
@@ -24,7 +53,7 @@ const Orders = () => {
         setLoading(true);
         setError(null);
         const data = await fetchMenuCategories();
-        console.log("Fetched menu data:", data); // Debugging
+        console.log("Fetched menu data:", data);
         setMenuCategories(data);
       } catch (error) {
         console.error("Error loading menu data:", error);
@@ -82,6 +111,8 @@ const Orders = () => {
 
   const handleClearItems = () => {
     setSelectedItems([]);
+    setInitialPaymentMethod(null);
+    navigate('/loop/orders', { state: { recalledTransaction: null } }); // Clear recalledTransaction
   };
 
   const handleDeleteItem = (itemId) => {
@@ -115,12 +146,12 @@ const Orders = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: "rgba(0, 0, 0, 0.8)", // Semi-transparent black overlay
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
-          zIndex: 1000, // Ensure it’s above other content
+          zIndex: 1000,
         }}
       >
         <CircularProgress sx={{ color: "#f15a22" }} size={60} />
@@ -153,7 +184,6 @@ const Orders = () => {
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
           <Typography variant="h5">Orders</Typography>
         </Box>
-        {/* ================================================================================================================================= */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, position: "relative", alignItems: "flex-start" }}>
           <Button variant="contained" sx={buttonStyle} onClick={handleToggleMenu}>
             Quick Menu
@@ -170,8 +200,6 @@ const Orders = () => {
           </Button>
         </Box>
 
-        {/* ================================================================================================================================= */}
-
         {menuState.showMenu && !menuState.orderType && <OrderTypeGrid onOrderTypeSelect={handleOrderTypeSelect} />}
 
         {menuState.showMenu && menuState.orderType && !menuState.activeCategory && (
@@ -181,7 +209,6 @@ const Orders = () => {
             onPreviousMenu={handlePreviousMenu}
           />
         )}
-        {/* ================================================================================================================================= */}
 
         {menuState.showMenu && menuState.orderType && activeCategory && (
           <MenuGrid
@@ -196,11 +223,14 @@ const Orders = () => {
           />
         )}
       </Box>
-      {/* ================================================================================================================================= */}
 
-      <OrderSummary selectedItems={selectedItems} onClearItems={handleClearItems} onDeleteItem={handleDeleteItem} />
-
-      {/* ================================================================================================================================= */}
+      <OrderSummary 
+        selectedItems={selectedItems} 
+        onClearItems={handleClearItems} 
+        onDeleteItem={handleDeleteItem}
+        initialPaymentMethod={initialPaymentMethod}
+        recalledTransaction={location.state?.recalledTransaction}
+      />
     </Box>
   );
 };
