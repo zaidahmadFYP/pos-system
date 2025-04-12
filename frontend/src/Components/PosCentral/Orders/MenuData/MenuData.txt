@@ -1,0 +1,278 @@
+
+export const menuCategories = [
+    {
+      id: "starters",
+      name: "Starters",
+      columns: 3,
+      items: [
+        { id: "arabic-spin-roll", name: "Arabic Spin Roll", price:  690 },
+        { id: "behari-spin-roll", name: "Behari Spin Roll", price: 690 },
+        { id: "calzone-chunks", name: "Calzone Chunks", price: 1150 },
+        { id: "cheezy-sticks", name: "Cheezy Sticks", price: 630 },
+        { id: "flaming-wings-6pc", name: "Flaming Wings 6pc", price: 650 },
+        { id: "flaming-wings-12pc", name: "Flaming Wings 12pc", price: 1250 },
+        // { id: "lettuce", name: "Lettuce (30 Grm)", price: 3.99 },
+        { id: "oven-baked-wings-12pc", name: "Oven Baked Wings 12pc", price: 600 },
+        { id: "oven-baked-wings-6pc", name: "Oven Baked Wings 6pc", price: 1150 },
+      ],
+    },
+    {
+      id: "pizza-deals",
+      name: "Pizza Deals",
+      columns: 2,
+      items: [
+        { id: "small-pizza-deal", name: "Small Pizza Deal", price: 15.99 },
+        { id: "regular-pizza-deal", name: "Regular Pizza Deal", price: 19.99 },
+        { id: "large-pizza-deal", name: "Large Pizza Deal", price: 24.99 },
+      ],
+    },
+    {
+      id: "burgerz",
+      name: "Burgerz",
+      columns: 2,
+      items: [
+        { id: "reggy-burger", name: "Reggy Burger", price: 7.99 },
+        { id: "bazinga", name: "Bazinga", price: 9.99 },
+      ],
+    },
+    {
+      id: "cheezy-treats",
+      name: "Cheezy Treats",
+      columns: 2,
+      items: [
+        { id: "behari-kebab-pizza", name: "Behari Kebab Pizza", price: 16.99 },
+        { id: "cheezious-special-pizza", name: "Cheezious Special Pizza", price: 18.99 },
+        { id: "chicken-extreme-pizza", name: "Chicken Extreme Pizza", price: 20.99 },
+      ],
+    },
+    {
+      id: "special-pizza",
+      name: "Special Pizza",
+      columns: 2,
+      items: [
+        { id: "crown-crust", name: "Crown Crust", price: 19.99 },
+        { id: "stuffed-crust", name: "Stuffed Crust", price: 21.99 },
+        { id: "beef-pepperoni", name: "Beef Pepperoni", price: 23.99 },
+        { id: "stuffed-cheese-pizza", name: "Stuffed Cheese Pizza", price: 25.99 },
+      ],
+    },
+    {
+      id: "side-order",
+      name: "Side Order",
+      columns: 2,
+      items: [
+        { id: "chicken-nuggets-5pcs", name: "Chicken Nuggets 5PCS", price: 6.99 },
+        { id: "fried-chicken-1pcs", name: "Fried Chicken 1PCS", price: 3.99 },
+        { id: "fried-chicken-3pcs", name: "Fried Chicken 3PCS", price: 10.99 },
+        { id: "regular-fries", name: "Regular Fries", price: 2.99 },
+        { id: "large-fries", name: "Large Fries", price: 4.99 },
+      ],
+    },
+    {
+      id: "somewhat-sooper",
+      name: "Somewhat Sooper",
+      columns: 3,
+      items: [
+        { id: "black-pepper-pizza", name: "Black Pepper Pizza", price: 17.99 },
+        { id: "cheese-lover-pizza", name: "Cheese Lover Pizza", price: 18.99 },
+        { id: "chicken-mushroom-pizza", name: "Chicken Mushroom Pizza", price: 19.99 },
+        { id: "chicken-supreme-pizza", name: "Chicken Supreme Pizza", price: 20.99 },
+        { id: "euro-pizza", name: "Euro Pizza", price: 21.99 },
+        { id: "pepperoni-pizza", name: "Pepperoni Pizza", price: 22.99 },
+        { id: "sausage-pizza", name: "Sausage Pizza", price: 23.99 },
+      ],
+    },
+    {
+      id: "pasta",
+      name: "Pasta",
+      columns: 2,
+      items: [
+        { id: "crunchy-chicken-pasta", name: "Crunchy Chicken Pasta", price: 14.99 },
+        { id: "fettuccine-alfredo-pasta", name: "Fettuccine Alfredo Pasta", price: 16.99 },
+      ],
+    },
+    {
+      id: "somewhat-amazing",
+      name: "Somewhat Amazing",
+      columns: 2,
+      smallText: true,
+      items: [
+        { id: "amazing-deal-1", name: "S.Amazing Deal-1 (2 Bazinga + Fries + 2 Drinks)", price: 29.99 },
+        { id: "amazing-deal-2", name: "S.Amazing Deal-2 (2 Bazinga + Chic Pcs + Large Fries + 2 Drinks)", price: 34.99 },
+        { id: "amazing-deal-3", name: "S.Amazing Deal-3 (3 Bazinga + Large Fries + 1L Drink)", price: 39.99 },
+        { id: "amazing-deal-4", name: "S.Amazing Deal-4 (3 Bazinga + Chic Pcs + 1L Drink)", price: 44.99 },
+      ],
+    },
+    {
+      id: "somewhat-local",
+      name: "Somewhat Local",
+      columns: 2,
+      items: [
+        { id: "chicken-fajita-pizza", name: "Chicken Fajita Pizza", price: 18.99 },
+        { id: "chicken-lover-pizza", name: "Chicken Lover Pizza", price: 19.99 },
+        { id: "chicken-tandoori-pizza", name: "Chicken Tandoori Pizza", price: 20.99 },
+        { id: "chicken-tikka-pizza", name: "Chicken Tikka Pizza", price: 21.99 },
+        { id: "hot-n-spicy-pizza", name: "Hot n Spicy Pizza", price: 22.99 },
+        { id: "vegetable-pizza", name: "Vegetable Pizza", price: 17.99 },
+      ],
+    },
+    {
+      id: "sweetness",
+      name: "Sweetness",
+      columns: 2,
+      smallText: true,
+      items: [
+        { id: "chocolate-double-scoop", name: "Chocolate Double Scoop IceCream", price: 5.99 },
+        { id: "king-kulfa-double-scoop", name: "King Kulfa Double Scoop IceCream", price: 6.99 },
+        { id: "mango-double-scoop", name: "Mango Double Scoop IceCream", price: 5.99 },
+        { id: "tutti-fruity-double-scoop", name: "Tutti Fruity Icecream Double Scoop Icecream", price: 5.99 },
+        { id: "strawberry-double-scoop", name: "Strawberry Double Scoop IceCream", price: 5.99 },
+        { id: "vanilla-double-scoop", name: "Vanilla Double Scoop IceCream", price: 5.99 },
+      ],
+    },
+    {
+      id: "sandwiches-platters",
+      name: "Sandwiches and Platters",
+      columns: 2,
+      items: [
+        { id: "special-roasted-plater", name: "Special Roasted Plater", price: 17.99 },
+        { id: "mexican-sandwich", name: "Mexican Sandwich", price: 9.99 },
+        { id: "pizza-stacker", name: "Pizza Stacker", price: 12.99 },
+        { id: "classic-roll-plater", name: "Classic Roll Plater", price: 14.99 },
+        { id: "euro-sandwich", name: "Euro Sandwich", price: 10.99 },
+        { id: "classic-roll-plater-2", name: "Classic Roll Plater", price: 14.99 },
+        { id: "bihari-sandwich", name: "Bihari Sandwich", price: 11.99 },
+        { id: "arabic-roll-plater", name: "Arabic Roll Plater", price: 13.99 },
+      ],
+    },
+    {
+      id: "wraps",
+      name: "Wraps",
+      columns: 1,
+      items: [{ id: "bazooka", name: "Bazooka", price: 8.99 }],
+    },
+    {
+      id: "drinks",
+      name: "Drinks",
+      columns: 2,
+      items: [
+        { id: "7up", name: "7UP", price: 1.99 },
+        { id: "pepsi", name: "Pepsi", price: 1.99 },
+        { id: "marinda", name: "Marinda", price: 1.99 },
+        { id: "regular", name: "Regular", price: 1.99 },
+        { id: "nr", name: "NR", price: 1.99 },
+        { id: "murree", name: "Murree", price: 1.99 },
+        { id: "250ml-juice", name: "250ML Juice", price: 2.99 },
+        { id: "aquafina-500ml", name: "Aquafina 500ML", price: 2.99 },
+      ],
+    },
+    {
+      id: "addons",
+      name: "Addons",
+      columns: 2,
+      smallText: true,
+      items: [
+        { id: "extra-tikka", name: "Extra Tikka", price: 1.99 },
+        { id: "extra-black-pepper", name: "Extra Black Pepper", price: 0.99 },
+        { id: "extra-cheese", name: "Extra Cheese", price: 1.49 },
+        { id: "extra-fajita", name: "Extra Fajita", price: 2.49 },
+        { id: "extra-grilled-smoke", name: "Extra Grilled/Smoke", price: 1.99 },
+        { id: "extra-jamaican", name: "Extra Jamaican", price: 2.99 },
+        { id: "extra-mughlai", name: "Extra Mughlai", price: 2.49 },
+        { id: "deal-with-addition", name: "Deal With Addition of (Reg Drink & Reg Fries)", price: 4.99 },
+        { id: "mayo-dip-sauce", name: "Mayo Dip Sauce (Pack)", price: 0.99 },
+      ],
+    },
+    {
+      id: "desserts",
+      name: "Desserts",
+      columns: 2,
+      items: [
+        { id: "cheese-cake", name: "Cheese Cake", price: 7.99 },
+        { id: "cake", name: "Cake", price: 8.99 },
+        { id: "milk-cake", name: "Milk Cake", price: 6.99 },
+      ],
+    },
+  ]
+  
+  
+
+Arabic Spin Roll
+Behari Spin Roll
+Calzone Chunks
+Cheezy Sticks
+Flaming Wings 6pc
+Flaming Wings 12pcm
+Oven Baked Wings 12pc
+Oven Baked Wings 6pc
+Small Pizza Deal
+Regular Pizza Deal
+Large Pizza Deal
+Reggy Burger
+Bazinga
+Behari Kebab Pizza
+Cheezious Special Pizza
+Chicken Extreme Pizza
+Crown Crust
+Stuffed Crust
+Beef Pepperoni
+Stuffed Cheese Pizza
+Chicken Nuggets 5PCS
+Fried Chicken 1PCS
+Fried Chicken 3PCS
+Regular Fries
+Large Fries
+Black Pepper Pizza
+Cheese Lover Pizza
+Chicken Mushroom Pizza
+Chicken Supreme Pizza
+Euro Pizza
+Pepperoni Pizza
+Sausage Pizza
+Crunchy Chicken Pasta
+Fettuccine Alfredo Pasta
+S.Amazing Deal-1 (2 Bazinga + Fries + 2 Drinks)
+S.Amazing Deal-2 (2 Bazinga + Chic Pcs + Large Fries + 2 Drinks)
+S.Amazing Deal-3 (3 Bazinga + Large Fries + 1L Drink)
+S.Amazing Deal-4 (3 Bazinga + Chic Pcs + 1L Drink)
+Chicken Fajita Pizza
+Chicken Lover Pizza
+Chicken Tandoori Pizza
+Chicken Tikka Pizza
+Hot n Spicy Pizza
+Vegetable Pizza
+Chocolate Double Scoop IceCream
+King Kulfa Double Scoop IceCream
+Mango Double Scoop IceCream
+Tutti Fruity Icecream Double Scoop Icecream
+Strawberry Double Scoop IceCream
+Vanilla Double Scoop IceCream
+Special Roasted Plater
+Mexican Sandwich
+Pizza Stacker
+Classic Roll Plater
+Euro Sandwich
+Classic Roll Plater 2
+Bihari Sandwich
+Arabic Roll Plater
+Bazooka
+7UP
+Pepsi
+Marinda
+Regular
+NR
+Murree
+250ML Juice
+Aquafina 500ML
+Extra Tikka
+Extra Black Pepper
+Extra Cheese
+Extra Fajita
+Extra Grilled/Smoke
+Extra Jamaican
+Extra Mughlai
+Deal With Addition of (Reg Drink & Reg Fries)
+Mayo Dip Sauce (Pack)
+Cheese Cake
+Cake
+Milk Cake
