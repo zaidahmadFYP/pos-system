@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserForm from './UserForm';
 import UserDrawer from './UserDrawer';
-import { UserContext } from '../../context/UserContext'; // Adjust path as needed
+import { UserContext } from '../../context/UserContext'; 
 
 const Login = () => {
   const [users, setUsers] = useState([]); // Store users from backend
@@ -20,8 +20,9 @@ const Login = () => {
 
   // Fetch users from backend when component mounts
   useEffect(() => {
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001'; 
     axios
-      .get('http://localhost:5001/api/users', {
+      .get(`${apiUrl}/api/users`, {
         params: {
           role: { $in: ['Cashier', 'Manager'] }, // Filter users by role
         },
@@ -61,14 +62,10 @@ const Login = () => {
         setSnackbarOpen(true);
 
         // Set employeeName in context
-        //console.log('Selected User:', selectedUser);
         const employeeName = selectedUser.displayName || selectedUser.name || 'Unknown User';
-        //console.log('Employee Name:', employeeName);
         setEmployeeName(employeeName);
-        //console.log('Set employeeName in context:', employeeName);
 
         setTimeout(() => {
-          //console.log('Navigating to /loop');
           navigate('/loop');
         }, 500);
       } else {

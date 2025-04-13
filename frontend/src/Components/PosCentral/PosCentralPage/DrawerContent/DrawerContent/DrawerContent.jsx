@@ -252,197 +252,197 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
     }
 
     // Handle PRINT X REPORT
-    if (selectedTask === "PRINT X REPORT") {
-      const fetchXReport = async () => {
-        try {
-          // Step 1: Fetch the active posReport for the employee to get the startingTime
-          const posReportResponse = await fetch(
-            `${process.env.REACT_APP_API_URL}/api/posreports?employeeName=${employeeName}&status=active`
-          );
-          if (!posReportResponse.ok) {
-            const errorData = await posReportResponse.json();
-            throw new Error(
-              errorData.error ||
-                `Failed to fetch posReport (Status: ${posReportResponse.status})`
-            );
-          }
-          const posReports = await posReportResponse.json();
-          if (!posReports || posReports.length === 0) {
-            throw new Error("No active POS report found for this employee");
-          }
-          const posReport = posReports[0]; // Take the first active posReport
-          const startingTime = posReport.startingTime; // e.g., "00:00:00"
+    // if (selectedTask === "PRINT X REPORT") {
+    //   const fetchXReport = async () => {
+    //     try {
+    //       // Step 1: Fetch the active posReport for the employee to get the startingTime
+    //       const posReportResponse = await fetch(
+    //         `${process.env.REACT_APP_API_URL}/api/posreports?employeeName=${employeeName}&status=active`
+    //       );
+    //       if (!posReportResponse.ok) {
+    //         const errorData = await posReportResponse.json();
+    //         throw new Error(
+    //           errorData.error ||
+    //             `Failed to fetch posReport (Status: ${posReportResponse.status})`
+    //         );
+    //       }
+    //       const posReports = await posReportResponse.json();
+    //       if (!posReports || posReports.length === 0) {
+    //         throw new Error("No active POS report found for this employee");
+    //       }
+    //       const posReport = posReports[0]; // Take the first active posReport
+    //       const startingTime = posReport.startingTime; // e.g., "00:00:00"
 
-          // Step 2: Calculate the endTime by adding 5 hours to the startingTime
-          const [hours, minutes, seconds] = startingTime.split(":").map(Number);
-          const startDate = new Date();
-          startDate.setHours(hours, minutes, seconds, 0);
-          const endDate = new Date(startDate.getTime() + 5 * 60 * 60 * 1000); // Add 5 hours
-          const endTime = endDate.toTimeString().split(" ")[0]; // Format as "HH:mm:ss"
+    //       // Step 2: Calculate the endTime by adding 5 hours to the startingTime
+    //       const [hours, minutes, seconds] = startingTime.split(":").map(Number);
+    //       const startDate = new Date();
+    //       startDate.setHours(hours, minutes, seconds, 0);
+    //       const endDate = new Date(startDate.getTime() + 5 * 60 * 60 * 1000); // Add 5 hours
+    //       const endTime = endDate.toTimeString().split(" ")[0]; // Format as "HH:mm:ss"
 
-          // Step 3: Fetch transactions from /api/transactions/orders
-          const transactionsResponse = await fetch(
-            `${process.env.REACT_APP_API_URL}/api/transactions/orders`
-          );
-          if (!transactionsResponse.ok) {
-            const errorData = await transactionsResponse.json();
-            throw new Error(
-              errorData.error ||
-                `Failed to fetch transactions (Status: ${transactionsResponse.status})`
-            );
-          }
-          const transactions = await transactionsResponse.json();
+    //       // Step 3: Fetch transactions from /api/transactions/orders
+    //       const transactionsResponse = await fetch(
+    //         `${process.env.REACT_APP_API_URL}/api/transactions/orders`
+    //       );
+    //       if (!transactionsResponse.ok) {
+    //         const errorData = await transactionsResponse.json();
+    //         throw new Error(
+    //           errorData.error ||
+    //             `Failed to fetch transactions (Status: ${transactionsResponse.status})`
+    //         );
+    //       }
+    //       const transactions = await transactionsResponse.json();
 
-          // Calculate metrics for the X-Report
-          const now = new Date();
-          const currentDate = now.toISOString().split("T")[0];
-          const currentTime = now.toTimeString().split(" ")[0];
+    //       // Calculate metrics for the X-Report
+    //       const now = new Date();
+    //       const currentDate = now.toISOString().split("T")[0];
+    //       const currentTime = now.toTimeString().split(" ")[0];
 
-          // 1. Count the number of orders placed (total transactions)
-          const numberOfOrders = transactions.length;
+    //       // 1. Count the number of orders placed (total transactions)
+    //       const numberOfOrders = transactions.length;
 
-          // 2. Count the total of all orders placed (sum of transaction totals)
-          const totalSales = transactions.reduce(
-            (sum, transaction) => sum + transaction.total,
-            0
-          );
+    //       // 2. Count the total of all orders placed (sum of transaction totals)
+    //       const totalSales = transactions.reduce(
+    //         (sum, transaction) => sum + transaction.total,
+    //         0
+    //       );
 
-          // 3. Count the taxes (10% of total sales)
-          const taxes = totalSales * 0.1;
+    //       // 3. Count the taxes (10% of total sales)
+    //       const taxes = totalSales * 0.1;
 
-          // Calculate other metrics based on the transactions data
-          const returns = transactions
-            .filter((t) => t.isReturn)
-            .reduce((sum, transaction) => sum + transaction.total, 0);
-          const salesCount = transactions.length;
-          const customerSalesCount = transactions.filter(
-            (t) => t.paymentMethod !== "void"
-          ).length;
-          const voidedSalesCount = transactions.filter(
-            (t) => t.paymentMethod === "void"
-          ).length;
-          const discounts = transactions.reduce(
-            (sum, transaction) => sum + (transaction.discount || 0),
-            0
-          );
-          const rounded = 0;
-          const voidedLines = 0;
-          const customerOrders = {
-            placed: 0,
-            edited: 0,
-            depositCollected: 0,
-            canceled: 0,
-            voidedLines: 0,
-            charges: 0,
-            depositRefunded: 0,
-            depositRedeemed: 0,
-          };
-          const openDrawerCount = 0;
+    //       // Calculate other metrics based on the transactions data
+    //       const returns = transactions
+    //         .filter((t) => t.isReturn)
+    //         .reduce((sum, transaction) => sum + transaction.total, 0);
+    //       const salesCount = transactions.length;
+    //       const customerSalesCount = transactions.filter(
+    //         (t) => t.paymentMethod !== "void"
+    //       ).length;
+    //       const voidedSalesCount = transactions.filter(
+    //         (t) => t.paymentMethod === "void"
+    //       ).length;
+    //       const discounts = transactions.reduce(
+    //         (sum, transaction) => sum + (transaction.discount || 0),
+    //         0
+    //       );
+    //       const rounded = 0;
+    //       const voidedLines = 0;
+    //       const customerOrders = {
+    //         placed: 0,
+    //         edited: 0,
+    //         depositCollected: 0,
+    //         canceled: 0,
+    //         voidedLines: 0,
+    //         charges: 0,
+    //         depositRefunded: 0,
+    //         depositRedeemed: 0,
+    //       };
+    //       const openDrawerCount = 0;
 
-          // Construct the report data
-          const reportData = {
-            employeeName,
-            date: currentDate,
-            time: currentTime,
-            register: "000094",
-            startDate: currentDate,
-            startTime: startingTime, // Fetched from posReport
-            endDate: currentDate,
-            endTime: endTime, // Calculated as startingTime + 5 hours
-            sales: totalSales,
-            taxes,
-            returns: returns || 0,
-            salesCount,
-            customerSalesCount,
-            voidedSalesCount,
-            openDrawerCount,
-            discounts: discounts || 0,
-            rounded,
-            voidedLines,
-            customerOrders,
-          };
+    //       // Construct the report data
+    //       const reportData = {
+    //         employeeName,
+    //         date: currentDate,
+    //         time: currentTime,
+    //         register: "000094",
+    //         startDate: currentDate,
+    //         startTime: startingTime, // Fetched from posReport
+    //         endDate: currentDate,
+    //         endTime: endTime, // Calculated as startingTime + 5 hours
+    //         sales: totalSales,
+    //         taxes,
+    //         returns: returns || 0,
+    //         salesCount,
+    //         customerSalesCount,
+    //         voidedSalesCount,
+    //         openDrawerCount,
+    //         discounts: discounts || 0,
+    //         rounded,
+    //         voidedLines,
+    //         customerOrders,
+    //       };
 
-          // Open a new window and render the X-Report
-          const printWindow = window.open("", "_blank", "width=600,height=400");
-          const xReportHtml = ReactDOMServer.renderToString(
-            <XReport reportData={reportData} />
-          );
-          printWindow.document.write(`
-        <html>
-          <head>
-            <title>X-Report</title>
-            <!-- Import VT323 font from Google Fonts -->
-            <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-            <style>
-              body {
-                margin: 0;
-                padding: 5px; /* Small padding for preview */
-                background-color: #fff;
-                width: 3in; /* Set width to 3 inches */
-                min-width: 3in; /* Ensure minimum width */
-                font-family: "VT323", monospace !important; /* Force VT323 font */
-                font-size: 10px; /* Reduced font size to fit more content */
-                line-height: 1.0; /* Match XReport line height */
-                box-sizing: border-box;
-                /* Ensure content fits on one page */
-                height: auto;
-                max-height: 8in; /* Limit to one page (8 inches) */
-                overflow: hidden; /* Prevent overflow to second page */
-              }
-              /* Ensure text doesn't wrap */
-              p, span, div {
-                white-space: nowrap !important; /* Prevent wrapping */
-                overflow: hidden;
-                text-overflow: clip;
-              }
-              @media print {
-                body {
-                  padding: 0;
-                  width: 3in; /* Ensure width is 3 inches for printing */
-                  min-width: 3in;
-                  height: auto;
-                  max-height: 8in;
-                  overflow: hidden;
-                }
-                .no-print {
-                  display: none;
-                }
-                @page {
-                  size: 3in 8in; /* Define page size for printing */
-                  margin: 0; /* Remove default margins */
-                }
-              }
-            </style>
-          </head>
-          <body>
-            ${xReportHtml}
-            <script>
-              window.onload = function() {
-                window.print();
-                window.onafterprint = function() {
-                  window.close();
-                };
-              };
-            </script>
-          </body>
-        </html>
-      `);
-          printWindow.document.close();
-        } catch (error) {
-          console.error("Error fetching X-Report:", error);
-          setSnackbarMessage(
-            error.message.includes("employeeName is required")
-              ? "Employee name is required to generate the X-Report."
-              : error.message.includes("No active POS report found")
-              ? "No active POS report found. Please start a shift first."
-              : "Failed to generate X-Report. Please try again."
-          );
-          setSnackbarSeverity("error");
-          setSnackbarOpen(true);
-        }
-      };
-      fetchXReport();
-    }
+    //       // Open a new window and render the X-Report
+    //       const printWindow = window.open("", "_blank", "width=600,height=400");
+    //       const xReportHtml = ReactDOMServer.renderToString(
+    //         <XReport reportData={reportData} />
+    //       );
+    //       printWindow.document.write(`
+    //     <html>
+    //       <head>
+    //         <title>X-Report</title>
+    //         <!-- Import VT323 font from Google Fonts -->
+    //         <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    //         <style>
+    //           body {
+    //             margin: 0;
+    //             padding: 5px; /* Small padding for preview */
+    //             background-color: #fff;
+    //             width: 3in; /* Set width to 3 inches */
+    //             min-width: 3in; /* Ensure minimum width */
+    //             font-family: "VT323", monospace !important; /* Force VT323 font */
+    //             font-size: 10px; /* Reduced font size to fit more content */
+    //             line-height: 1.0; /* Match XReport line height */
+    //             box-sizing: border-box;
+    //             /* Ensure content fits on one page */
+    //             height: auto;
+    //             max-height: 8in; /* Limit to one page (8 inches) */
+    //             overflow: hidden; /* Prevent overflow to second page */
+    //           }
+    //           /* Ensure text doesn't wrap */
+    //           p, span, div {
+    //             white-space: nowrap !important; /* Prevent wrapping */
+    //             overflow: hidden;
+    //             text-overflow: clip;
+    //           }
+    //           @media print {
+    //             body {
+    //               padding: 0;
+    //               width: 3in; /* Ensure width is 3 inches for printing */
+    //               min-width: 3in;
+    //               height: auto;
+    //               max-height: 8in;
+    //               overflow: hidden;
+    //             }
+    //             .no-print {
+    //               display: none;
+    //             }
+    //             @page {
+    //               size: 3in 8in; /* Define page size for printing */
+    //               margin: 0; /* Remove default margins */
+    //             }
+    //           }
+    //         </style>
+    //       </head>
+    //       <body>
+    //         ${xReportHtml}
+    //         <script>
+    //           window.onload = function() {
+    //             window.print();
+    //             window.onafterprint = function() {
+    //               window.close();
+    //             };
+    //           };
+    //         </script>
+    //       </body>
+    //     </html>
+    //   `);
+    //       printWindow.document.close();
+    //     } catch (error) {
+    //       console.error("Error fetching X-Report:", error);
+    //       setSnackbarMessage(
+    //         error.message.includes("employeeName is required")
+    //           ? "Employee name is required to generate the X-Report."
+    //           : error.message.includes("No active POS report found")
+    //           ? "No active POS report found. Please start a shift first."
+    //           : "Failed to generate X-Report. Please try again."
+    //       );
+    //       setSnackbarSeverity("error");
+    //       setSnackbarOpen(true);
+    //     }
+    //   };
+    //   fetchXReport();
+    // }
 
     // Placeholder for PRINT Z REPORT
     if (selectedTask === "PRINT Z REPORT") {
@@ -976,11 +976,11 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
               Submit
             </Button>
           </Box>
-        ) : selectedTask === "PRINT X REPORT" ? (
-          <Typography variant="body1" sx={{ color: "white", maxWidth: "90%" }}>
-            X-Report is being generated and will open in a new window for
-            printing...
-          </Typography>
+        // ) : selectedTask === "PRINT X REPORT" ? (
+        //   <Typography variant="body1" sx={{ color: "white", maxWidth: "90%" }}>
+        //     X-Report is being generated and will open in a new window for
+        //     printing...
+        //   </Typography>
         ) : selectedTask === "PRINT Z REPORT" ? (
           <Typography variant="body1" sx={{ color: "white", maxWidth: "90%" }}>
             Z-Report is being generated...

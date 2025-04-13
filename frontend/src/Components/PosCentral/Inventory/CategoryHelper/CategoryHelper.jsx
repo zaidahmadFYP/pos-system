@@ -3,7 +3,7 @@
 // Helper function to extract ObjectId value
 export const getIdFromObjectId = (idObject) => {
     // Debugging log to see what's coming in
-    console.log("getIdFromObjectId input:", idObject)
+    //console.log("getIdFromObjectId input:", idObject)
   
     if (!idObject) return null
   
@@ -42,7 +42,7 @@ export const getIdFromObjectId = (idObject) => {
   
       if (categoryId) {
         acc[categoryId] = category.name
-        console.log(`Mapped category ID ${categoryId} to name ${category.name}`)
+        //console.log(`Mapped category ID ${categoryId} to name ${category.name}`)
       }
   
       return acc
@@ -53,8 +53,8 @@ export const getIdFromObjectId = (idObject) => {
   export const processProducts = (products, categoryMapObj) => {
     return products.map((product) => {
       // Debug each product's category
-      console.log(`Processing product: ${product.name}`)
-      console.log("Product raw category:", product.category)
+      //console.log(`Processing product: ${product.name}`)
+      //console.log("Product raw category:", product.category)
   
       // Extract category ID accounting for MongoDB format
       let categoryId = null
@@ -68,8 +68,8 @@ export const getIdFromObjectId = (idObject) => {
         }
       }
   
-      console.log(`Extracted categoryId: ${categoryId}`)
-      console.log(`Category name from mapping: ${categoryMapObj[categoryId] || "Unknown"}`)
+      //console.log(`Extracted categoryId: ${categoryId}`)
+      //console.log(`Category name from mapping: ${categoryMapObj[categoryId] || "Unknown"}`)
   
       return {
         ...product,

@@ -1,4 +1,3 @@
-// OrderSummary.jsx
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -18,16 +17,16 @@ import {
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import PaymentMethodSelector from "../PaymentMethodSelector/PaymentMethodSelector";
-import generateDocketSlip from "../DocketSlip/DocketSlip"; // Import the utility function
+import generateDocketSlip from "../DocketSlip/DocketSlip";
 import { useNavigate } from "react-router-dom";
-import { logError } from "../../Report/utils/logger"; // Adjust the path as needed
+import { logError } from "../../Report/utils/logger";
 
-const OrderSummary = ({ 
-  selectedItems = [], 
-  onClearItems, 
-  onDeleteItem, 
-  initialPaymentMethod, 
-  recalledTransaction 
+const OrderSummary = ({
+  selectedItems = [],
+  onClearItems,
+  onDeleteItem,
+  initialPaymentMethod,
+  recalledTransaction,
 }) => {
   const navigate = useNavigate();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(initialPaymentMethod);
@@ -50,10 +49,12 @@ const OrderSummary = ({
     setSelectedPaymentMethod(initialPaymentMethod);
   }, [initialPaymentMethod]);
 
-  // Log when the component mounts with a recalled transaction
   useEffect(() => {
     if (recalledTransaction) {
-      logError("Software", `Transaction #${recalledTransaction.transactionID} recalled on component mount`);
+      logError(
+        "Software",
+        `Transaction #${recalledTransaction.transactionID} recalled on component mount`
+      );
     }
   }, [recalledTransaction]);
 
@@ -84,7 +85,9 @@ const OrderSummary = ({
     try {
       setLoadingTransactions(true);
       setTransactionError(null);
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/transactions/orders`);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/transactions/orders`
+      );
       if (!response.ok) {
         const errorMessage = "Failed to fetch transactions";
         logError("Database", `Database connectivity issue: ${errorMessage}`);
@@ -97,7 +100,7 @@ const OrderSummary = ({
       const errorMessage = `Failed to fetch transactions: ${err.message}. Please try again later.`;
       logError("Database", `Database connectivity issue: ${err.message}`);
       setTransactionError(errorMessage);
-      console.error('Error fetching transactions:', err);
+      console.error("Error fetching transactions:", err);
     } finally {
       setLoadingTransactions(false);
     }
@@ -116,15 +119,15 @@ const OrderSummary = ({
 
   const handleTransactionClick = (transaction) => {
     console.log("Recalling transaction:", transaction);
-    const recalledItems = transaction.items.map(item => ({
+    const recalledItems = transaction.items.map((item) => ({
       id: item.itemId || item.id,
       name: item.itemName,
       quantity: item.itemQuantity,
       price: item.price || 0,
     }));
     console.log("Mapped recalled items:", recalledItems);
-    onClearItems(); // Clear existing items before recalling
-    navigate('/loop/orders', {
+    onClearItems();
+    navigate("/loop/orders", {
       state: {
         recalledTransaction: {
           items: recalledItems,
@@ -146,7 +149,9 @@ const OrderSummary = ({
     setError(null);
     try {
       const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5001";
-      const finishedGoodsResponse = await fetch(`${apiUrl}/api/menu/finishedgoods`);
+      const finishedGoodsResponse = await fetch(
+        `${apiUrl}/api/menu/finishedgoods`
+      );
       if (!finishedGoodsResponse.ok) {
         const errorMessage = "Failed to fetch finished goods data";
         logError("Database", `Database connectivity issue: ${errorMessage}`);
@@ -165,20 +170,28 @@ const OrderSummary = ({
       const updatedBomData = [...bomData];
       const rawIngredientsToReduce = {};
 
-      selectedItems.forEach(item => {
-        const finishedGood = finishedGoods.find(fg => fg.id === item.id);
-        if (finishedGood && finishedGood.rawIngredients && Array.isArray(finishedGood.rawIngredients)) {
-          finishedGood.rawIngredients.forEach(ingredient => {
+      selectedItems.forEach((item) => {
+        const finishedGood = finishedGoods.find((fg) => fg.id === item.id);
+        if (
+          finishedGood &&
+          finishedGood.rawIngredients &&
+          Array.isArray(finishedGood.rawIngredients)
+        ) {
+          finishedGood.rawIngredients.forEach((ingredient) => {
             const rawId = ingredient.RawID;
             const quantityToReduce = ingredient.RawConsume * item.quantity;
-            rawIngredientsToReduce[rawId] = (rawIngredientsToReduce[rawId] || 0) + quantityToReduce;
+            rawIngredientsToReduce[rawId] =
+              (rawIngredientsToReduce[rawId] || 0) + quantityToReduce;
           });
         }
       });
 
-      updatedBomData.forEach(bomItem => {
+      updatedBomData.forEach((bomItem) => {
         if (rawIngredientsToReduce[bomItem.RawID]) {
-          bomItem.Quantity = Math.max(0, bomItem.Quantity - rawIngredientsToReduce[bomItem.RawID]);
+          bomItem.Quantity = Math.max(
+            0,
+            bomItem.Quantity - rawIngredientsToReduce[bomItem.RawID]
+          );
         }
       });
 
@@ -195,7 +208,7 @@ const OrderSummary = ({
       }
 
       const orderData = {
-        selectedItems: selectedItems.map(item => ({
+        selectedItems: selectedItems.map((item) => ({
           id: item.id,
           name: item.name,
           quantity: item.quantity,
@@ -212,7 +225,8 @@ const OrderSummary = ({
       });
 
       if (!orderResponse.ok) {
-        const errorMessage = (await orderResponse.json()).message || "Failed to send order";
+        const errorMessage =
+          (await orderResponse.json()).message || "Failed to send order";
         logError("Transaction", `Transaction failed: ${errorMessage}`);
         throw new Error(errorMessage);
       }
@@ -226,10 +240,11 @@ const OrderSummary = ({
           severity: "success",
         });
 
-        // Log transaction sent to kitchen
-        logError("Software", `Transaction #${result.transactionID} sent to kitchen`);
+        logError(
+          "Software",
+          `Transaction #${result.transactionID} sent to kitchen`
+        );
 
-        // Call the utility function to generate the docket slip
         generateDocketSlip({
           selectedItems,
           subtotal,
@@ -238,15 +253,21 @@ const OrderSummary = ({
           transactionID: result.transactionID,
         });
 
-        // Log docket slip generation
-        logError("Software", `Transaction slip generated for Transaction #${result.transactionID}`);
+        logError(
+          "Software",
+          `Transaction slip generated for Transaction #${result.transactionID}`
+        );
       }
       onClearItems();
     } catch (error) {
       console.error("Error:", error);
       logError("Transaction", `Transaction failed: ${error.message}`);
       setError(error.message || "Failed to send order");
-      setSnackbar({ open: true, message: error.message || "Failed to send order", severity: "error" });
+      setSnackbar({
+        open: true,
+        message: error.message || "Failed to send order",
+        severity: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -272,46 +293,54 @@ const OrderSummary = ({
 
       if (!paymentResponse.ok) {
         const errorMessage = "Payment failed";
-        logError("Payment", `Payment failed for Transaction #${recalledTransaction.transactionID}: ${errorMessage}`);
+        logError(
+          "Payment",
+          `Payment failed for Transaction #${recalledTransaction.transactionID}: ${errorMessage}`
+        );
         throw new Error(errorMessage);
       }
 
-      //const result = await paymentResponse.json();
       setSnackbar({
         open: true,
         message: `Payment for Transaction #${recalledTransaction.transactionID} successful!`,
         severity: "success",
       });
 
-      // Log transaction paid
-      logError("Software", `Transaction #${recalledTransaction.transactionID} paid successfully`);
+      logError(
+        "Software",
+        `Transaction #${recalledTransaction.transactionID} paid successfully`
+      );
 
-      // Generate the Paid Transaction Receipt
       generateDocketSlip({
         selectedItems,
         subtotal,
         tax,
         total,
         transactionID: recalledTransaction.transactionID,
-        type: "paid", // Indicate that this is a paid transaction receipt
-        paymentMethod: selectedPaymentMethod, // Include the payment method
+        type: "paid",
+        paymentMethod: selectedPaymentMethod,
       });
 
-      // Log docket slip generation
-      logError("Software", `Transaction slip generated for Transaction #${recalledTransaction.transactionID} (Paid)`);
+      logError(
+        "Software",
+        `Transaction slip generated for Transaction #${recalledTransaction.transactionID} (Paid)`
+      );
 
       onClearItems();
       setLatestTransactionID(null);
       setSelectedPaymentMethod(null);
-      navigate('/loop/orders', { state: { recalledTransaction: null } });
+      navigate("/loop/orders", { state: { recalledTransaction: null } });
 
-      // Log navigation after payment
       logError("Software", "Navigated to orders page after payment");
     } catch (error) {
       console.error("Payment Error:", error);
       logError("Payment", `Payment failed: ${error.message}`);
       setError(error.message || "Failed to process payment");
-      setSnackbar({ open: true, message: error.message || "Failed to process payment", severity: "error" });
+      setSnackbar({
+        open: true,
+        message: error.message || "Failed to process payment",
+        severity: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -319,15 +348,24 @@ const OrderSummary = ({
 
   const handleClearItems = () => {
     if (selectedItems.length > 0) {
-      // Log transaction suspended if there are items
       if (latestTransactionID) {
-        logError("Software", `Transaction #${latestTransactionID} suspended (items cleared)`);
+        logError(
+          "Software",
+          `Transaction #${latestTransactionID} suspended (items cleared)`
+        );
       } else {
-        logError("Software", "Transaction suspended (items cleared before sending to kitchen)");
+        logError(
+          "Software",
+          "Transaction suspended (items cleared before sending to kitchen)"
+        );
       }
     }
     onClearItems();
-    setSnackbar({ open: true, message: "All items cleared from order", severity: "info" });
+    setSnackbar({
+      open: true,
+      message: "All items cleared from order",
+      severity: "info",
+    });
     logError("Software", "Cleared all items from order");
   };
 
@@ -339,11 +377,14 @@ const OrderSummary = ({
   return (
     <Box
       sx={{
-        width: "800px",
+        width: { xs: "100%", md: "600px", lg: "700px" },
+        maxWidth: "100%",
         backgroundColor: "#121212",
         color: "white",
-        p: 3,
-        borderLeft: "1px solid #333",
+        p: { xs: 2, md: 3 },
+        borderLeft: { md: "1px solid #333" },
+        boxSizing: "border-box",
+        overflowX: "auto",
       }}
     >
       <Typography variant="h6" sx={{ mb: 3 }}>
@@ -354,13 +395,27 @@ const OrderSummary = ({
         <Typography variant="subtitle1" sx={{ mb: 2 }}>
           Select Payment Method
         </Typography>
-        <PaymentMethodSelector selectedMethod={selectedPaymentMethod} onSelectMethod={setSelectedPaymentMethod} />
+        <PaymentMethodSelector
+          selectedMethod={selectedPaymentMethod}
+          onSelectMethod={setSelectedPaymentMethod}
+        />
       </Box>
 
       {latestTransactionID && (
-        <Box sx={{ mb: 3, p: 2, backgroundColor: "#1E1E1E", borderRadius: 1 }}>
+        <Box
+          sx={{
+            mb: 3,
+            p: 2,
+            backgroundColor: "#1E1E1E",
+            borderRadius: 1,
+            overflow: "hidden",
+          }}
+        >
           <Typography variant="subtitle1" sx={{ color: "#FFA500" }}>
-            {recalledTransaction ? "Recalled Transaction ID" : "Last Transaction ID"}: {latestTransactionID}
+            {recalledTransaction
+              ? "Recalled Transaction ID"
+              : "Last Transaction ID"}
+            : {latestTransactionID}
           </Typography>
           {recalledTransaction && (
             <>
@@ -378,13 +433,16 @@ const OrderSummary = ({
         </Box>
       )}
 
-      <Paper sx={{ mb: 3 }}>
+      <Paper sx={{ mb: 3, overflowX: "auto" }}>
         <Table
           sx={{
+            minWidth: { xs: 500, md: 650 },
             "& .MuiTableCell-root": {
               color: "white",
               borderColor: "#333",
               backgroundColor: "#1E1E1E",
+              fontSize: { xs: "0.8rem", md: "0.875rem" },
+              padding: { xs: "8px 4px", md: "16px" },
             },
           }}
         >
@@ -403,7 +461,9 @@ const OrderSummary = ({
                 <TableCell>{item.name}</TableCell>
                 <TableCell align="center">{item.quantity}</TableCell>
                 <TableCell align="right">{(item.price || 0).toFixed(2)}</TableCell>
-                <TableCell align="right">{((item.price || 0) * (item.quantity || 0)).toFixed(2)}</TableCell>
+                <TableCell align="right">
+                  {((item.price || 0) * (item.quantity || 0)).toFixed(2)}
+                </TableCell>
                 <TableCell align="center">
                   <IconButton
                     onClick={() => {
@@ -413,9 +473,10 @@ const OrderSummary = ({
                     sx={{
                       color: "#FF4444",
                       "&:hover": { backgroundColor: "rgba(255, 68, 68, 0.1)" },
+                      padding: { xs: 0.5, md: 1 },
                     }}
                   >
-                    <DeleteOutlineIcon />
+                    <DeleteOutlineIcon fontSize="small" />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -432,7 +493,10 @@ const OrderSummary = ({
       </Paper>
 
       {error && (
-        <Typography variant="body2" sx={{ color: "#FF4444", mb: 2, textAlign: "center" }}>
+        <Typography
+          variant="body2"
+          sx={{ color: "#FF4444", mb: 2, textAlign: "center" }}
+        >
           {error}
         </Typography>
       )}
@@ -442,7 +506,8 @@ const OrderSummary = ({
           Subtotal: <span style={{ color: "#FFA500" }}>{subtotal.toFixed(2)}</span>
         </Typography>
         <Typography variant="body1" color="gray">
-          Tax ({taxRate * 100}%): <span style={{ color: "#FFA500" }}>{tax.toFixed(2)}</span>
+          Tax ({taxRate * 100}%):{" "}
+          <span style={{ color: "#FFA500" }}>{tax.toFixed(2)}</span>
         </Typography>
         <Typography variant="h6" sx={{ color: "#FFA500", mt: 1 }}>
           Total: {total.toFixed(2)}
@@ -457,8 +522,11 @@ const OrderSummary = ({
               ...buttonStyle,
               backgroundColor: "#FFA500",
               ...createDisabledStyle("#FFA500"),
+              fontSize: { xs: "0.8rem", md: "0.9rem" },
             }}
-            disabled={!selectedPaymentMethod || isLoading || selectedItems.length === 0}
+            disabled={
+              !selectedPaymentMethod || isLoading || selectedItems.length === 0
+            }
             onClick={handleSendToKitchen}
           >
             {isLoading ? "SENDING..." : "SEND TO KITCHEN"}
@@ -471,8 +539,11 @@ const OrderSummary = ({
               ...buttonStyle,
               backgroundColor: "#4CAF50",
               ...createDisabledStyle("#4CAF50"),
+              fontSize: { xs: "0.8rem", md: "0.9rem" },
             }}
-            disabled={!selectedPaymentMethod || isLoading || selectedItems.length === 0}
+            disabled={
+              !selectedPaymentMethod || isLoading || selectedItems.length === 0
+            }
             onClick={handlePay}
           >
             {isLoading ? "PROCESSING..." : "PAY"}
@@ -481,7 +552,11 @@ const OrderSummary = ({
         {!recalledTransaction && (
           <Button
             variant="contained"
-            sx={{ ...buttonStyle, backgroundColor: "#4CAF50" }}
+            sx={{
+              ...buttonStyle,
+              backgroundColor: "#4CAF50",
+              fontSize: { xs: "0.8rem", md: "0.9rem" },
+            }}
             onClick={handleOpenDrawer}
           >
             RECALL TRANSACTION
@@ -493,6 +568,7 @@ const OrderSummary = ({
             ...buttonStyle,
             backgroundColor: "#FF4444",
             ...createDisabledStyle("#FF4444"),
+            fontSize: { xs: "0.8rem", md: "0.9rem" },
           }}
           onClick={handleClearItems}
           disabled={selectedItems.length === 0 || isLoading}
@@ -506,23 +582,31 @@ const OrderSummary = ({
         open={drawerOpen}
         onClose={handleCloseDrawer}
         sx={{
-          '& .MuiDrawer-paper': {
-            width: '50%',
-            background: 'linear-gradient(180deg, #1f1f1f 0%, #252525 100%)',
-            color: 'white',
-            p: 2,
-            boxSizing: 'border-box',
+          "& .MuiDrawer-paper": {
+            width: { xs: "80%", sm: "60%", md: "50%", lg: "40%" },
+            maxWidth: "600px",
+            background: "linear-gradient(180deg, #1f1f1f 0%, #252525 100%)",
+            color: "white",
+            p: { xs: 1, sm: 2 },
+            boxSizing: "border-box",
           },
         }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+          }}
+        >
           <Typography
             variant="h6"
             sx={{
-              color: '#f15a22',
-              fontWeight: 'bold',
-              letterSpacing: '0.5px',
-              textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
+              color: "#f15a22",
+              fontWeight: "bold",
+              letterSpacing: "0.5px",
+              textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
             }}
           >
             Transaction Journal
@@ -530,19 +614,19 @@ const OrderSummary = ({
           <Button
             onClick={handleCloseDrawer}
             sx={{
-              background: 'linear-gradient(45deg, #f15a22 30%, #ff6d00 90%)',
-              color: 'white',
-              padding: '8px 16px',
-              textTransform: 'none',
-              borderRadius: '8px',
-              fontWeight: 'bold',
-              boxShadow: '0 3px 6px rgba(0, 0, 0, 0.3)',
-              '&:hover': {
-                background: 'linear-gradient(45deg, #d14c1b 30%, #e65c00 90%)',
-                boxShadow: '0 5px 10px rgba(0, 0, 0, 0.5)',
-                transform: 'translateY(-2px)',
+              background: "linear-gradient(45deg, #f15a22 30%, #ff6d00 90%)",
+              color: "white",
+              padding: { xs: "6px 12px", sm: "8px 16px" },
+              textTransform: "none",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              boxShadow: "0 3px 6px rgba(0, 0, 0, 0.3)",
+              "&:hover": {
+                background: "linear-gradient(45deg, #d14c1b 30%, #e65c00 90%)",
+                boxShadow: "0 5px 10px rgba(0, 0, 0, 0.5)",
+                transform: "translateY(-2px)",
               },
-              transition: 'all 0.3s ease',
+              transition: "all 0.3s ease",
             }}
           >
             Close
@@ -550,65 +634,83 @@ const OrderSummary = ({
         </Box>
 
         {loadingTransactions ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-            <CircularProgress sx={{ color: '#f15a22' }} />
-            <Typography sx={{ color: 'white', ml: 2 }}>Loading transactions...</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 1,
+            }}
+          >
+            <CircularProgress sx={{ color: "#f15a22" }} />
+            <Typography sx={{ color: "white", ml: 2 }}>
+              Loading transactions...
+            </Typography>
           </Box>
         ) : transactionError ? (
-          <Box sx={{ textAlign: 'center', py: 4, flex: 1 }}>
-            <Typography sx={{ color: '#ff4d4d', fontWeight: 'bold', mb: 2 }}>{transactionError}</Typography>
+          <Box sx={{ textAlign: "center", py: 4, flex: 1 }}>
+            <Typography sx={{ color: "#ff4d4d", fontWeight: "bold", mb: 2 }}>
+              {transactionError}
+            </Typography>
             <Button
               onClick={fetchTransactions}
               sx={{
-                background: 'linear-gradient(45deg, #f15a22 30%, #ff6d00 90%)',
-                color: 'white',
-                padding: '8px 24px',
-                textTransform: 'none',
-                borderRadius: '8px',
-                fontWeight: 'bold',
-                boxShadow: '0 3px 6px rgba(0, 0, 0, 0.3)',
-                '&:hover': {
-                  background: 'linear-gradient(45deg, #d14c1b 30%, #e65c00 90%)',
-                  boxShadow: '0 5px 10px rgba(0, 0, 0, 0.5)',
-                  transform: 'translateY(-2px)',
+                background: "linear-gradient(45deg, #f15a22 30%, #ff6d00 90%)",
+                color: "white",
+                padding: { xs: "6px 20px", sm: "8px 24px" },
+                textTransform: "none",
+                borderRadius: "8px",
+                fontWeight: "bold",
+                boxShadow: "0 3px 6px rgba(0, 0, 0, 0.3)",
+                "&:hover": {
+                  background: "linear-gradient(45deg, #d14c1b 30%, #e65c00 90%)",
+                  boxShadow: "0 5px 10px rgba(0, 0, 0, 0.5)",
+                  transform: "translateY(-2px)",
                 },
-                transition: 'all 0.3s ease',
+                transition: "all 0.3s ease",
               }}
             >
               Retry
             </Button>
           </Box>
         ) : transactions.length === 0 ? (
-          <Typography sx={{ color: '#b0b0b0', textAlign: 'center', py: 4, flex: 1 }}>
+          <Typography
+            sx={{ color: "#b0b0b0", textAlign: "center", py: 4, flex: 1 }}
+          >
             No transactions found.
           </Typography>
         ) : (
           <>
             <Box
               sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                background: '#2a2a2a',
-                padding: 1.5,
-                borderRadius: '8px',
-                border: '1px solid #444',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-                color: '#f15a22',
-                fontWeight: 'bold',
+                display: "flex",
+                justifyContent: "space-between",
+                background: "#2a2a2a",
+                padding: { xs: 1, sm: 1.5 },
+                borderRadius: "8px",
+                border: "1px solid #444",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                color: "#f15a22",
+                fontWeight: "bold",
                 mb: 1,
+                fontSize: { xs: "0.8rem", sm: "0.875rem" },
               }}
             >
               <Typography sx={{ flex: 1 }}>Transaction #</Typography>
-              <Typography sx={{ flex: 1, textAlign: 'center' }}>Total</Typography>
-              <Typography sx={{ flex: 1, textAlign: 'right' }}>Date</Typography>
+              <Typography sx={{ flex: 1, textAlign: "center" }}>
+                Total
+              </Typography>
+              <Typography sx={{ flex: 1, textAlign: "right" }}>
+                Date
+              </Typography>
             </Box>
-            
+
             <Box
               sx={{
                 flex: 1,
-                overflowY: 'auto',
+                overflowY: "auto",
                 minHeight: 0,
-                maxHeight: '100%',
+                maxHeight: "100%",
               }}
             >
               {transactions.map((transaction) => (
@@ -616,31 +718,35 @@ const OrderSummary = ({
                   key={transaction._id}
                   onClick={() => handleTransactionClick(transaction)}
                   sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    background: '#2a2a2a',
-                    padding: 1.5,
-                    borderRadius: '8px',
-                    color: 'white',
-                    cursor: 'pointer',
-                    border: '1px solid #444',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-                    transition: 'all 0.3s ease',
+                    display: "flex",
+                    justifyContent: "space-between",
+                    background: "#2a2a2a",
+                    padding: { xs: 1, sm: 1.5 },
+                    borderRadius: "8px",
+                    color: "white",
+                    cursor: "pointer",
+                    border: "1px solid #444",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                    transition: "all 0.3s ease",
                     mb: 1,
-                    '&:hover': {
-                      background: 'linear-gradient(45deg, #f15a22 30%, #ff6d00 90%)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+                    "&:hover": {
+                      background:
+                        "linear-gradient(45deg, #f15a22 30%, #ff6d00 90%)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
                     },
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
                   }}
                 >
-                  <Typography sx={{ flex: 1, fontWeight: 'bold' }}>
+                  <Typography sx={{ flex: 1, fontWeight: "bold" }}>
                     #{transaction.transactionID}
                   </Typography>
-                  <Typography sx={{ flex: 1, textAlign: 'center' }}>
+                  <Typography sx={{ flex: 1, textAlign: "center" }}>
                     ${transaction.total.toFixed(2)}
                   </Typography>
-                  <Typography sx={{ flex: 1, textAlign: 'right', color: '#b0b0b0' }}>
+                  <Typography
+                    sx={{ flex: 1, textAlign: "right", color: "#b0b0b0" }}
+                  >
                     {new Date(transaction.date).toLocaleString()}
                   </Typography>
                 </Box>

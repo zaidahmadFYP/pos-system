@@ -7,7 +7,7 @@ import SalesChart from './SalesChart';
 const Dashboard = () => {
   const [dailySales, setDailySales] = useState(0);
   const [monthlyRevenue, setMonthlyRevenue] = useState(0);
-  const [tableOccupancy, setTableOccupancy] = useState("25 Tables"); // Placeholder
+  const [tableOccupancy, setTableOccupancy] = useState("25 Tables");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -20,7 +20,6 @@ const Dashboard = () => {
       setError(null);
 
       try {
-        // Fetch transactions
         const transactionsResponse = await fetch(
           `${process.env.REACT_APP_API_URL}/api/transactions/orders`
         );
@@ -29,22 +28,18 @@ const Dashboard = () => {
         }
         const transactions = await transactionsResponse.json();
 
-        // Calculate Daily Sales (current day)
         const today = new Date().toISOString().split("T")[0];
         const todaySales = transactions
           .filter((transaction) => transaction.date.startsWith(today))
           .reduce((sum, transaction) => sum + transaction.total, 0);
         setDailySales(todaySales);
 
-        // Calculate Monthly Revenue (current month)
-        const currentMonth = new Date().toISOString().slice(0, 7); // e.g., "2025-04"
+        const currentMonth = new Date().toISOString().slice(0, 7);
         const monthSales = transactions
           .filter((transaction) => transaction.date.startsWith(currentMonth))
           .reduce((sum, transaction) => sum + transaction.total, 0);
         setMonthlyRevenue(monthSales);
 
-        // Table Occupancy (placeholder, as no API provides this)
-        // If you have an API or logic to calculate table occupancy, it can be added here
         setTableOccupancy("25 Tables");
       } catch (err) {
         console.error("Error fetching dashboard data:", err.message);
@@ -83,31 +78,40 @@ const Dashboard = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        overflow: 'hidden',
+        overflowY: 'auto',
         bgcolor: '#000000',
-        p: 2,
+        p: { xs: 1, sm: 1.5, md: 2, lg: 3, xl: 4 },
         display: 'flex',
         flexDirection: 'column',
+        width: '100%',
+        boxSizing: 'border-box',
       }}
     >
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
-          <CircularProgress sx={{ color: '#f15a22' }} />
+          <CircularProgress sx={{ color: '#f15a22', size: { xs: 24, sm: 30, md: 36 } }} />
         </Box>
       ) : error ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
-          <Typography sx={{ color: 'red' }}>{error}</Typography>
+          <Typography sx={{ 
+            color: 'red', 
+            fontSize: { xs: '0.875rem', sm: '1rem', md: '1.25rem', lg: '1.5rem' } 
+          }}>
+            {error}
+          </Typography>
         </Box>
       ) : (
         <Grid
           container
-          spacing={2}
+          spacing={{ xs: 0.5, sm: 1, md: 1.5, lg: 2, xl: 3 }} 
           sx={{
             flexGrow: 1,
+            width: '100%',
+            m: 0,
           }}
         >
-          {/* First Row - Metric Cards */}
-          <Grid item xs={12} md={4}>
+          {/* First row - Metric Cards */}
+          <Grid item xs={12} sm={6} md={4}>
             <MetricCard
               title="Daily Sales"
               value={`$${dailySales.toFixed(2)}`}
@@ -115,7 +119,7 @@ const Dashboard = () => {
               type="sales"
             />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <MetricCard
               title="Monthly Revenue"
               value={`$${monthlyRevenue.toFixed(2)}`}
@@ -123,7 +127,7 @@ const Dashboard = () => {
               type="revenue"
             />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <MetricCard
               title="Table Occupancy"
               value={tableOccupancy}
@@ -132,12 +136,12 @@ const Dashboard = () => {
             />
           </Grid>
 
-          {/* Second Row - Full-width Popular Dish */}
+          {/* Second row - Popular Items */}
           <Grid item xs={12}>
             <PopularItem title="Popular Dish" />
           </Grid>
 
-          {/* Third Row - Sales Chart */}
+          {/* Third row - Sales Chart */}
           <Grid item xs={12}>
             <SalesChart />
           </Grid>
@@ -148,11 +152,15 @@ const Dashboard = () => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert
           onClose={handleSnackbarClose}
           severity={snackbarSeverity}
-          sx={{ width: "100%" }}
+          sx={{ 
+            width: { xs: '90%', sm: 'auto' },
+            fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' }
+          }}
         >
           {snackbarMessage}
         </Alert>

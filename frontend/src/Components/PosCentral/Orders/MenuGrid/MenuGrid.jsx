@@ -60,8 +60,8 @@ const MenuGrid = ({ category, onItemClick, onPreviousMenu }) => {
       {selectedPizza && (
         <Box
           sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
+            display: "flex",  // Use flex to arrange the buttons vertically
+            flexDirection: "column",  // Stack the buttons vertically for pizza sizes
             gap: 2,
             mt: 0,
             position: "absolute",
@@ -81,4 +81,3 @@ const MenuGrid = ({ category, onItemClick, onPreviousMenu }) => {
 }
 
 export default MenuGrid
-

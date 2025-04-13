@@ -1,50 +1,82 @@
-import React from 'react';
-import { Box, Paper, Typography, Button, Divider } from '@mui/material';
+"use client"
 
-const CenterColumn = ({ toggleDrawer, handleNavigation }) => (
-  <Box sx={{ flex: 1, p: 2, textAlign: 'center' }}>
-    <Paper
-      sx={{
-        backgroundColor: '#1f1f1f',
-        borderRadius: 3,
-        padding: 3,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 3,
-        height: '100%',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-      }}
-    >
-      <Typography variant="h5" sx={{ color: '#f15a22', fontWeight: 'bold', fontFamily: 'Cocon' }}>
-        POS ACTIONS
-      </Typography>
-      <Divider sx={{ borderColor: '#808080', margin: '3px auto', width: '0.65' }} />
-      {[
-        { label: 'SELECT HARDWARE STATION', action: toggleDrawer('SELECT HARDWARE STATION') },
-        { label: 'SHOW JOURNAL', action: () => handleNavigation('show-journal') }, // Updated path
-        { label: 'SUSPEND TRANSACTION', action: () => handleNavigation('suspend-transaction') }, // Updated path
-        { label: 'RECALL TRANSACTION', action: () => handleNavigation('recall-transaction') }, // Updated path
-      ].map(({ label, action }) => (
-        <Button
-          key={label}
-          onClick={action}
+import { Box, Paper, Typography, Button, Divider, useTheme, useMediaQuery } from "@mui/material"
+
+const CenterColumn = ({ toggleDrawer, handleNavigation }) => {
+  // Add theme and media queries for responsive design
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery("(max-width:1080px)")
+  const isLowHeight = useMediaQuery("(max-height:720px)")
+  const isMediumScreen = useMediaQuery("(min-width:1081px) and (max-width:1366px)")
+
+  // Combined check for 1080x720 resolution
+  const is1080x720 = isSmallScreen && isLowHeight
+
+  // Responsive styling based on screen size
+  const getPaperStyles = () => ({
+    backgroundColor: "#1f1f1f",
+    borderRadius: isSmallScreen ? 2 : 3,
+    padding: is1080x720 ? 1 : isSmallScreen ? 1.5 : isMediumScreen ? 2 : 3,
+    display: "flex",
+    flexDirection: "column",
+    gap: is1080x720 ? 1 : isSmallScreen ? 1.5 : isMediumScreen ? 2 : 3,
+    height: "100%",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+  })
+
+  const getButtonStyles = () => ({
+    backgroundColor: "#f15a22",
+    color: "white",
+    padding: is1080x720 ? "8px" : isSmallScreen ? "12px" : isMediumScreen ? "14px" : "16px",
+    textTransform: "none",
+    borderRadius: isSmallScreen ? 1 : 2,
+    "&:hover": {
+      backgroundColor: "#d14c1b",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+      transform: is1080x720 ? "scale(1.03)" : isSmallScreen ? "scale(1.05)" : "scale(1.1)",
+    },
+    fontWeight: "bold",
+    minWidth: is1080x720 ? "140px" : isSmallScreen ? "160px" : isMediumScreen ? "180px" : "200px",
+    fontSize: is1080x720 ? "0.8rem" : isSmallScreen ? "0.85rem" : isMediumScreen ? "0.95rem" : "1rem",
+    transition: "transform 0.15s ease-in-out",
+  })
+
+  const actions = [
+    { label: "SELECT HARDWARE STATION", action: toggleDrawer("SELECT HARDWARE STATION") },
+    { label: "SHOW JOURNAL", action: () => handleNavigation("show-journal") },
+    { label: "SUSPEND TRANSACTION", action: () => handleNavigation("suspend-transaction") },
+    { label: "RECALL TRANSACTION", action: () => handleNavigation("recall-transaction") },
+  ]
+
+  return (
+    <Box sx={{ flex: 1, p: is1080x720 ? 0.5 : isSmallScreen ? 1 : 2, textAlign: "center" }}>
+      <Paper sx={getPaperStyles()}>
+        <Typography
+          variant={isSmallScreen ? "h6" : "h5"}
           sx={{
-            backgroundColor: '#f15a22',
-            color: 'white',
-            padding: '16px',
-            textTransform: 'none',
-            borderRadius: 2,
-            '&:hover': { backgroundColor: '#d14c1b', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)', transform: 'scale(1.1)' },
-            fontWeight: 'bold',
-            minWidth: '200px',
-            transition: 'transform 0.15s ease-in-out',
+            color: "#f15a22",
+            fontWeight: "bold",
+            fontFamily: "Cocon",
+            fontSize: is1080x720 ? "1rem" : isSmallScreen ? "1.1rem" : isMediumScreen ? "1.3rem" : "1.5rem",
           }}
         >
-          {label}
-        </Button>
-      ))}
-    </Paper>
-  </Box>
-);
+          POS ACTIONS
+        </Typography>
+        <Divider
+          sx={{
+            borderColor: "#808080",
+            margin: "3px auto",
+            width: "0.65",
+          }}
+        />
+        {actions.map(({ label, action }) => (
+          <Button key={label} onClick={action} sx={getButtonStyles()}>
+            {label}
+          </Button>
+        ))}
+      </Paper>
+    </Box>
+  )
+}
 
-export default CenterColumn;
+export default CenterColumn

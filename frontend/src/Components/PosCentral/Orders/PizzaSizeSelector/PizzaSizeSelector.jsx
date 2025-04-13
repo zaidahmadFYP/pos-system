@@ -9,7 +9,7 @@ const PizzaSizeSelector = ({ onSelect, onClose }) => {
 
   const buttonStyle = {
     backgroundColor: "#FFA500",
-    width: 85,
+    width: "100%",  // Adjust width to fill the container
     height: 85,
     padding: 0,
     display: "flex",
@@ -19,6 +19,7 @@ const PizzaSizeSelector = ({ onSelect, onClose }) => {
     wordWrap: "break-word",
     whiteSpace: "normal",
     fontSize: "0.75rem",
+    marginBottom: 1,  // Add some space between buttons
   }
 
   return (
@@ -33,8 +34,10 @@ const PizzaSizeSelector = ({ onSelect, onClose }) => {
         borderRadius: 1,
         border: "1px solid #333",
         display: "flex",
+        flexDirection: "column",  // Stack the buttons vertically
         gap: 2,
         zIndex: 1000,
+        width: "200px",  // Set a fixed width for the container
       }}
     >
       {sizes.map((size) => (
@@ -50,4 +53,3 @@ const PizzaSizeSelector = ({ onSelect, onClose }) => {
 }
 
 export default PizzaSizeSelector
-
