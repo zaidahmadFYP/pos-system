@@ -16,22 +16,76 @@ const Orders = () => {
     orderType: null,
     activeCategory: null,
   });
-  
+
   const [selectedItems, setSelectedItems] = useState(() => {
     const recalledTransaction = location.state?.recalledTransaction;
     const items = recalledTransaction ? recalledTransaction.items : [];
     console.log("Initial selectedItems in Orders:", items);
     return items;
   });
-  
+
   const [menuCategories, setMenuCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [initialPaymentMethod, setInitialPaymentMethod] = useState(() => {
     const recalledTransaction = location.state?.recalledTransaction;
     return recalledTransaction ? recalledTransaction.paymentMethod : null;
   });
+
+  // Track window size for responsive styling
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Determine screen size
+  const getResponsiveSize = () => {
+    if (windowWidth < 600) return 'xs';
+    if (windowWidth < 960) return 'sm';
+    if (windowWidth <= 1366) return 'md-compact';
+    return 'md';
+  };
+
+  const size = getResponsiveSize();
+  const isCompactHeight = windowHeight <= 768;
+
+  // Dynamic font size for subtitle
+  const getFontSize = () => {
+    switch (size) {
+      case 'xs': return '0.9rem';
+      case 'sm': return '1rem';
+      case 'md-compact': return '1.1rem';
+      default: return '1.25rem';
+    }
+  };
+
+  // Dynamic vertical spacing
+  const getVerticalSpacing = () => {
+    if (isCompactHeight) {
+      switch (size) {
+        case 'xs': return 0.5;
+        case 'sm': return 1;
+        default: return 2;
+      }
+    } else {
+      switch (size) {
+        case 'xs': return 1;
+        case 'sm': return 1.5;
+        default: return 2;
+      }
+    }
+  };
 
   // Update selectedItems and payment method when recalledTransaction changes
   useEffect(() => {
@@ -41,7 +95,6 @@ const Orders = () => {
       setSelectedItems(recalledTransaction.items);
       setInitialPaymentMethod(recalledTransaction.paymentMethod);
     } else {
-      // Reset when recalledTransaction is null
       setSelectedItems([]);
       setInitialPaymentMethod(null);
     }
@@ -112,7 +165,7 @@ const Orders = () => {
   const handleClearItems = () => {
     setSelectedItems([]);
     setInitialPaymentMethod(null);
-    navigate('/loop/orders', { state: { recalledTransaction: null } }); // Clear recalledTransaction
+    navigate('/loop/orders', { state: { recalledTransaction: null } });
   };
 
   const handleDeleteItem = (itemId) => {
@@ -178,13 +231,23 @@ const Orders = () => {
     );
   }
 
-  
-
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: "#121212" }}>
       <Box sx={{ flex: 1, p: 3, color: "white", position: "relative" }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
-          <Typography variant="h5">Orders</Typography>
+        {/* Orders Heading */}
+        <Box sx={{ mb: getVerticalSpacing() }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontSize: getFontSize(),
+              fontWeight: 'medium',
+              borderLeft: '3px solid #f15a22',
+              paddingLeft: 1,
+              color: 'white',
+            }}
+          >
+            Orders
+          </Typography>
         </Box>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, position: "relative", alignItems: "flex-start" }}>
           <Button variant="contained" sx={buttonStyle} onClick={handleToggleMenu}>
@@ -196,10 +259,6 @@ const Orders = () => {
               <ArrowForwardIcon sx={{ fontSize: "2rem" }} />
             </Box>
           )}
-
-          {/* <Button variant="contained" sx={buttonStyle}>
-            Actions
-          </Button> */}
         </Box>
 
         {menuState.showMenu && !menuState.orderType && <OrderTypeGrid onOrderTypeSelect={handleOrderTypeSelect} />}
