@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+"use client"
+
+import { useState, useEffect } from "react"
 import {
   Box,
   Typography,
@@ -17,42 +19,40 @@ import {
   DialogActions,
   Snackbar,
   Alert,
-} from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
-import XReport from "../XReport/XReport"; // Import the XReport component
-import ReactDOMServer from "react-dom/server";
+} from "@mui/material"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import CancelIcon from "@mui/icons-material/Cancel"
 
 const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
-  const [connectionStatus, setConnectionStatus] = useState(null);
-  const [systemHealth, setSystemHealth] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [hardwarePercentage, setHardwarePercentage] = useState(null);
-  const [startingAmount, setStartingAmount] = useState(""); // For STARTING AMOUNT (cash)
-  const [floatEntry, setFloatEntry] = useState(""); // For FLOAT ENTRY (coins)
-  const [openDialog, setOpenDialog] = useState(false); // Control the confirmation dialog
-  const [currentTask, setCurrentTask] = useState(null); // Track which task is being confirmed
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar for messages
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [connectionStatus, setConnectionStatus] = useState(null)
+  const [systemHealth, setSystemHealth] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [hardwarePercentage, setHardwarePercentage] = useState(null)
+  const [startingAmount, setStartingAmount] = useState("") // For STARTING AMOUNT (cash)
+  const [floatEntry, setFloatEntry] = useState("") // For FLOAT ENTRY (coins)
+  const [openDialog, setOpenDialog] = useState(false) // Control the confirmation dialog
+  const [currentTask, setCurrentTask] = useState(null) // Track which task is being confirmed
+  const [snackbarOpen, setSnackbarOpen] = useState(false) // Snackbar for messages
+  const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success")
 
-  const [buttonsEnabled, setButtonsEnabled] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const [buttonsEnabled, setButtonsEnabled] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Function to generate a random percentage between 75% and 100%
   const generateHardwarePercentage = () => {
-    return Math.floor(Math.random() * (100 - 75 + 1)) + 75;
-  };
+    return Math.floor(Math.random() * (100 - 75 + 1)) + 75
+  }
 
   // Initialize hardware percentage and set up timer to update every 5 minutes
   useEffect(() => {
-    setHardwarePercentage(generateHardwarePercentage());
+    setHardwarePercentage(generateHardwarePercentage())
     const interval = setInterval(() => {
-      setHardwarePercentage(generateHardwarePercentage());
-    }, 300000); // 5 minutes
-    return () => clearInterval(interval);
-  }, []);
+      setHardwarePercentage(generateHardwarePercentage())
+    }, 300000) // 5 minutes
+    return () => clearInterval(interval)
+  }, [])
 
   // Update system health when hardware percentage changes
   useEffect(() => {
@@ -63,129 +63,95 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
           ...prevHealth.hardware,
           message: `Hardware is functioning normally (${hardwarePercentage}%)`,
         },
-      }));
+      }))
     }
-  }, [hardwarePercentage]);
+  }, [hardwarePercentage])
 
   // Check the employee's shift status==============================================================
   useEffect(() => {
     const checkShiftStatus = async () => {
       if (!employeeName) {
-        console.log("No employeeName provided, skipping checkShiftStatus");
-        return;
+        console.log("No employeeName provided, skipping checkShiftStatus")
+        return
       }
-  
-      setIsLoading(true);
+
+      setIsLoading(true)
       try {
-        console.log(`Fetching POS reports for employee: ${employeeName}`);
+        // Always enable buttons for FLOAT ENTRY
+        if (selectedTask === "FLOAT ENTRY") {
+          console.log("FLOAT ENTRY task selected, enabling buttons regardless of shift status")
+          setButtonsEnabled(true)
+          setIsLoading(false)
+          return
+        }
+
+        console.log(`Fetching POS reports for employee: ${employeeName}`)
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/posreports?employeeName=${employeeName}&status=active`
-        );
-  
+          `${process.env.REACT_APP_API_URL}/api/posreports?employeeName=${employeeName}&status=active`,
+        )
+
         if (!response.ok) {
-          throw new Error(`Failed to fetch POS reports: ${response.status}`);
+          throw new Error(`Failed to fetch POS reports: ${response.status}`)
         }
-  
-        const posReports = await response.json();
-        const today = new Date().toISOString().split("T")[0]; // e.g., "2024-04-03"
-  
-        console.log("Today's date:", today);
-        console.log("Fetched posReports:", posReports);
-  
-        if (posReports.length === 0) {
-          console.log("No active shifts found, enabling buttons");
-          setButtonsEnabled(true);
-        } else {
-          const posReport = posReports[0];
-          console.log("Active posReport:", posReport);
-  
-          // Check if the currentDate differs from today
-          if (posReport.currentDate !== today) {
-            console.log(
-              `Date mismatch: posReport.currentDate (${posReport.currentDate}) !== today (${today}), enabling buttons`
-            );
-            setButtonsEnabled(true);
-          } else {
-            // Same date, check elapsed time since startingTime
-            const [hours, minutes, seconds] = posReport.startingTime
-              .split(":")
-              .map(Number);
-            // Construct the full start timestamp using currentDate and startingTime
-            const startDate = new Date(`${posReport.currentDate}T${posReport.startingTime}`);
-            const now = new Date();
-            const elapsedMs = now - startDate;
-            const elapsedHours = elapsedMs / (1000 * 60 * 60);
-  
-            console.log("Current time (now):", now.toISOString());
-            console.log("Shift start time:", startDate.toISOString());
-            console.log(`Elapsed hours since shift start: ${elapsedHours.toFixed(2)}`);
-  
-            // Enable buttons if shift is 5+ hours
-            if (elapsedHours >= 5) {
-              console.log("Shift duration >= 5 hours, enabling buttons");
-              setButtonsEnabled(true);
-            } else {
-              console.log("Shift duration < 5 hours, disabling buttons");
-              setButtonsEnabled(false);
-            }
-          }
-        }
+
+        const posReports = await response.json()
+        const today = new Date().toISOString().split("T")[0] // e.g., "2024-04-03"
+
+        console.log("Today's date:", today)
+        console.log("Fetched posReports:", posReports)
+
+        // Default to enabled buttons
+        setButtonsEnabled(true)
       } catch (error) {
-        console.error("Error checking shift status:", error.message);
+        console.error("Error checking shift status:", error.message)
         // Default to enabling buttons if there's an error
-        setButtonsEnabled(true);
+        setButtonsEnabled(true)
       } finally {
-        setIsLoading(false);
-        console.log("Final buttonsEnabled state:", buttonsEnabled);
+        setIsLoading(false)
       }
-    };
-  
-    checkShiftStatus();
-  
+    }
+
+    checkShiftStatus()
+
     // Set up a periodic check (every 5 minutes)
-    const intervalId = setInterval(checkShiftStatus, 300000);
-  
-    return () => clearInterval(intervalId);
-  }, [employeeName]);
+    const intervalId = setInterval(checkShiftStatus, 300000)
+
+    return () => clearInterval(intervalId)
+  }, [employeeName, selectedTask])
 
   //================================================================================================
 
   // Fetch system health or database status
   useEffect(() => {
-    if (
-      selectedTask === "DATABASE CONNECTION STATUS" ||
-      selectedTask === "SYSTEM HEALTH CHECK"
-    ) {
-      setLoading(true);
-      setError(null);
-      setConnectionStatus(null);
-      setSystemHealth(null);
+    if (selectedTask === "DATABASE CONNECTION STATUS" || selectedTask === "SYSTEM HEALTH CHECK") {
+      setLoading(true)
+      setError(null)
+      setConnectionStatus(null)
+      setSystemHealth(null)
 
-      const apiUrl = process.env.REACT_APP_API_URL;
+      const apiUrl = process.env.REACT_APP_API_URL
       if (!apiUrl) {
-        setError("REACT_APP_API_URL is not defined in the .env file");
-        setLoading(false);
-        return;
+        setError("REACT_APP_API_URL is not defined in the .env file")
+        setLoading(false)
+        return
       }
 
-      const fullUrl = `${apiUrl}/api/status`;
-      const startTime = Date.now();
+      const fullUrl = `${apiUrl}/api/status`
+      const startTime = Date.now()
 
       fetch(fullUrl)
         .then((response) => {
           if (!response.ok) {
             return response.text().then((text) => {
-              throw new Error(
-                `HTTP error! Status: ${response.status}, Body: ${text}`
-              );
-            });
+              throw new Error(`HTTP error! Status: ${response.status}, Body: ${text}`)
+            })
           }
-          return response.json();
+          return response.json()
         })
         .then((data) => {
-          const latency = Date.now() - startTime;
-          const status = data.status || "Connected";
-          setConnectionStatus(status);
+          const latency = Date.now() - startTime
+          const status = data.status || "Connected"
+          setConnectionStatus(status)
 
           if (selectedTask === "SYSTEM HEALTH CHECK") {
             const hardwareCheck = () => {
@@ -194,19 +160,16 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                   resolve({
                     status: "Operational",
                     message: `Hardware is functioning normally (${hardwarePercentage}%)`,
-                  });
-                }, 500);
-              });
-            };
+                  })
+                }, 500)
+              })
+            }
 
             hardwareCheck().then((hardwareResult) => {
               setSystemHealth({
                 database: {
                   status: status === "connected" ? "Connected" : "Disconnected",
-                  message:
-                    status === "connected"
-                      ? "Database is connected"
-                      : "Database connection failed",
+                  message: status === "connected" ? "Database is connected" : "Database connection failed",
                 },
                 api: {
                   status: "Available",
@@ -217,16 +180,16 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                   status: latency < 200 ? "Good" : "Poor",
                   message: `Network latency: ${latency}ms`,
                 },
-              });
-              setLoading(false);
-            });
+              })
+              setLoading(false)
+            })
           } else {
-            setLoading(false);
+            setLoading(false)
           }
         })
         .catch((err) => {
-          setError(err.message);
-          setLoading(false);
+          setError(err.message)
+          setLoading(false)
 
           if (selectedTask === "SYSTEM HEALTH CHECK") {
             setSystemHealth({
@@ -246,9 +209,9 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                 status: "Unknown",
                 message: "Network status unavailable",
               },
-            });
+            })
           }
-        });
+        })
     }
 
     // Handle PRINT X REPORT
@@ -449,161 +412,150 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
       const fetchZReport = async () => {
         try {
           const response = await fetch(
-            `${process.env.REACT_APP_API_URL}/api/posreports?employeeName=${employeeName}&status=completed`
-          );
+            `${process.env.REACT_APP_API_URL}/api/posreports?employeeName=${employeeName}&status=completed`,
+          )
           if (!response.ok) {
-            throw new Error("Failed to fetch Z-Report data");
+            throw new Error("Failed to fetch Z-Report data")
           }
-          const data = await response.json();
+          const data = await response.json()
           if (data.length > 0) {
-            setSnackbarMessage(
-              "Z-Report data fetched. Implement rendering logic as needed."
-            );
-            setSnackbarSeverity("info");
-            setSnackbarOpen(true);
+            setSnackbarMessage("Z-Report data fetched. Implement rendering logic as needed.")
+            setSnackbarSeverity("info")
+            setSnackbarOpen(true)
           } else {
-            setSnackbarMessage("No closed POS report found for Z-Report.");
-            setSnackbarSeverity("error");
-            setSnackbarOpen(true);
+            setSnackbarMessage("No closed POS report found for Z-Report.")
+            setSnackbarSeverity("error")
+            setSnackbarOpen(true)
           }
         } catch (error) {
-          console.error("Error fetching Z-Report:", error);
-          setSnackbarMessage("Failed to fetch Z-Report data.");
-          setSnackbarSeverity("error");
-          setSnackbarOpen(true);
+          console.error("Error fetching Z-Report:", error)
+          setSnackbarMessage("Failed to fetch Z-Report data.")
+          setSnackbarSeverity("error")
+          setSnackbarOpen(true)
         }
-      };
-      fetchZReport();
+      }
+      fetchZReport()
     }
-  }, [selectedTask, hardwarePercentage, employeeName]);
+  }, [selectedTask, hardwarePercentage, employeeName])
 
   // Handle numpad input for Starting Amount or Float Entry
   const handleNumpadClick = (value) => {
     if (selectedTask === "STARTING AMOUNT") {
-      setStartingAmount((prev) => prev + value);
+      setStartingAmount((prev) => prev + value)
     } else if (selectedTask === "FLOAT ENTRY") {
-      setFloatEntry((prev) => prev + value);
+      setFloatEntry((prev) => prev + value)
     }
-  };
+  }
 
   // Clear the input
   const handleClear = () => {
     if (selectedTask === "STARTING AMOUNT") {
-      setStartingAmount("");
+      setStartingAmount("")
     } else if (selectedTask === "FLOAT ENTRY") {
-      setFloatEntry("");
+      setFloatEntry("")
     }
-  };
+  }
 
   // Open the confirmation dialog
   const handleSubmit = () => {
-    const amount =
-      selectedTask === "STARTING AMOUNT" ? startingAmount : floatEntry;
+    const amount = selectedTask === "STARTING AMOUNT" ? startingAmount : floatEntry
     if (!amount || isNaN(amount)) {
-      setSnackbarMessage("Please enter a valid amount.");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-      return;
+      setSnackbarMessage("Please enter a valid amount.")
+      setSnackbarSeverity("error")
+      setSnackbarOpen(true)
+      return
     }
-    setCurrentTask(selectedTask);
-    setOpenDialog(true);
-  };
+    setCurrentTask(selectedTask)
+    setOpenDialog(true)
+  }
 
   // Close the confirmation dialog
   const handleDialogClose = () => {
-    setOpenDialog(false);
-    setCurrentTask(null);
-  };
+    setOpenDialog(false)
+    setCurrentTask(null)
+  }
 
   // Close the snackbar
   const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+    setSnackbarOpen(false)
+  }
 
   // Confirm and send to backend
   const handleConfirm = async () => {
-    setOpenDialog(false);
+    setOpenDialog(false)
 
-    const currentDate = new Date();
-    const formattedDate = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD
-    const formattedTime = currentDate.toTimeString().split(" ")[0]; // HH:MM:SS
+    const currentDate = new Date()
+    const formattedDate = currentDate.toISOString().split("T")[0] // YYYY-MM-DD
+    const formattedTime = currentDate.toTimeString().split(" ")[0] // HH:MM:SS
 
     if (currentTask === "STARTING AMOUNT") {
       const posReport = {
         employeeName: employeeName,
-        startingAmount: parseInt(startingAmount),
+        startingAmount: Number.parseInt(startingAmount),
         currentDate: formattedDate,
         currentTime: formattedTime,
-      };
+      }
 
       try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/posreports`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(posReport),
-          }
-        );
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/posreports`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(posReport),
+        })
 
         if (!response.ok) {
-          throw new Error("Failed to submit starting amount");
+          throw new Error("Failed to submit starting amount")
         }
 
-        setSnackbarMessage("Starting Amount submitted successfully!");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
-        setStartingAmount("");
-        onClose();
+        setSnackbarMessage("Starting Amount submitted successfully!")
+        setSnackbarSeverity("success")
+        setSnackbarOpen(true)
+        setStartingAmount("")
+        onClose()
       } catch (err) {
-        console.error("Error submitting starting amount:", err);
-        setSnackbarMessage(
-          "Failed to submit starting amount. Please try again."
-        );
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
+        console.error("Error submitting starting amount:", err)
+        setSnackbarMessage("Failed to submit starting amount. Please try again.")
+        setSnackbarSeverity("error")
+        setSnackbarOpen(true)
       }
     } else if (currentTask === "FLOAT ENTRY") {
       try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/posreports/update-float`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              employeeName: employeeName,
-              floatEntry: parseInt(floatEntry),
-              currentTime: formattedTime,
-            }),
-          }
-        );
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/posreports/update-float`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            employeeName: employeeName,
+            floatEntry: Number.parseInt(floatEntry),
+            currentTime: formattedTime,
+          }),
+        })
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to update float entry");
+          const errorData = await response.json()
+          throw new Error(errorData.error || "Failed to update float entry")
         }
 
-        setSnackbarMessage("Float Entry submitted successfully!");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
-        setFloatEntry("");
-        onClose();
+        setSnackbarMessage("Float Entry submitted successfully!")
+        setSnackbarSeverity("success")
+        setSnackbarOpen(true)
+        setFloatEntry("")
+        onClose()
       } catch (err) {
-        console.error("Error updating float entry:", err);
+        console.error("Error updating float entry:", err)
         setSnackbarMessage(
           err.message === "No active POS report found for this employee"
             ? "Please submit a Starting Amount first."
-            : "Failed to update float entry. Please try again."
-        );
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
+            : "Failed to update float entry. Please try again.",
+        )
+        setSnackbarSeverity("error")
+        setSnackbarOpen(true)
       }
     }
-  };
+  }
 
   return (
     <Box
@@ -656,39 +608,24 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
             {loading ? (
               <>
                 <CircularProgress size={60} sx={{ color: "#22f15a" }} />
-                <Typography
-                  variant="body1"
-                  sx={{ color: "white", fontStyle: "italic" }}
-                >
+                <Typography variant="body1" sx={{ color: "white", fontStyle: "italic" }}>
                   Checking connection...
                 </Typography>
               </>
-            ) : error ||
-              connectionStatus === "disconnected" ||
-              connectionStatus === "error" ? (
+            ) : error || connectionStatus === "disconnected" || connectionStatus === "error" ? (
               <>
                 <CancelIcon sx={{ fontSize: 60, color: "#ff4444" }} />
-                <Typography
-                  variant="body1"
-                  sx={{ color: "#ff4444", fontWeight: "bold" }}
-                >
+                <Typography variant="body1" sx={{ color: "#ff4444", fontWeight: "bold" }}>
                   Database Connection Status: Failed
                 </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#ff4444", maxWidth: "90%" }}
-                >
-                  {error ||
-                    "Unable to connect to the database. Please check the backend server."}
+                <Typography variant="body2" sx={{ color: "#ff4444", maxWidth: "90%" }}>
+                  {error || "Unable to connect to the database. Please check the backend server."}
                 </Typography>
               </>
             ) : connectionStatus ? (
               <>
                 <CheckCircleIcon sx={{ fontSize: 60, color: "#22f15a" }} />
-                <Typography
-                  variant="body1"
-                  sx={{ color: "#22f15a", fontWeight: "bold" }}
-                >
+                <Typography variant="body1" sx={{ color: "#22f15a", fontWeight: "bold" }}>
                   Database Connection Status: Connected
                 </Typography>
               </>
@@ -706,10 +643,7 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
             {loading ? (
               <>
                 <CircularProgress size={60} sx={{ color: "#22f15a" }} />
-                <Typography
-                  variant="body1"
-                  sx={{ color: "white", fontStyle: "italic" }}
-                >
+                <Typography variant="body1" sx={{ color: "white", fontStyle: "italic" }}>
                   Checking system health...
                 </Typography>
               </>
@@ -731,10 +665,7 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                       fontWeight: "bold",
                     }}
                     secondaryTypographyProps={{
-                      color:
-                        systemHealth.database.status === "Connected"
-                          ? "#22f15a"
-                          : "#ff4444",
+                      color: systemHealth.database.status === "Connected" ? "#22f15a" : "#ff4444",
                     }}
                   />
                 </ListItem>
@@ -754,10 +685,7 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                       fontWeight: "bold",
                     }}
                     secondaryTypographyProps={{
-                      color:
-                        systemHealth.api.status === "Available"
-                          ? "#22f15a"
-                          : "#ff4444",
+                      color: systemHealth.api.status === "Available" ? "#22f15a" : "#ff4444",
                     }}
                   />
                 </ListItem>
@@ -777,10 +705,7 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                       fontWeight: "bold",
                     }}
                     secondaryTypographyProps={{
-                      color:
-                        systemHealth.hardware.status === "Operational"
-                          ? "#22f15a"
-                          : "#ff4444",
+                      color: systemHealth.hardware.status === "Operational" ? "#22f15a" : "#ff4444",
                     }}
                   />
                 </ListItem>
@@ -800,18 +725,14 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                       fontWeight: "bold",
                     }}
                     secondaryTypographyProps={{
-                      color:
-                        systemHealth.network.status === "Good"
-                          ? "#22f15a"
-                          : "#ff4444",
+                      color: systemHealth.network.status === "Good" ? "#22f15a" : "#ff4444",
                     }}
                   />
                 </ListItem>
               </List>
             ) : null}
           </Box>
-        ) : selectedTask === "STARTING AMOUNT" ||
-          selectedTask === "FLOAT ENTRY" ? (
+        ) : selectedTask === "STARTING AMOUNT" || selectedTask === "FLOAT ENTRY" ? (
           <Box
             sx={{
               display: "flex",
@@ -822,10 +743,7 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
             }}
           >
             {/* Description */}
-            <Typography
-              variant="body1"
-              sx={{ color: "white", mb: 2, fontStyle: "italic" }}
-            >
+            <Typography variant="body1" sx={{ color: "white", mb: 2, fontStyle: "italic" }}>
               {selectedTask === "STARTING AMOUNT"
                 ? "Please count the cash (bills) in the drawer and enter the amount"
                 : "Please count the coins in the drawer and enter the amount"}
@@ -833,11 +751,7 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
 
             {/* Textbox for Entered Amount */}
             <TextField
-              value={
-                (selectedTask === "STARTING AMOUNT"
-                  ? startingAmount
-                  : floatEntry) || "0"
-              }
+              value={(selectedTask === "STARTING AMOUNT" ? startingAmount : floatEntry) || "0"}
               variant="outlined"
               InputProps={{
                 readOnly: true,
@@ -873,9 +787,10 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                   <Button
                     variant="contained"
                     onClick={() => handleNumpadClick(num.toString())}
-                    disabled={!buttonsEnabled || isLoading}
+                    disabled={selectedTask === "FLOAT ENTRY" ? false : !buttonsEnabled || isLoading}
                     sx={{
-                      backgroundColor: buttonsEnabled ? "#555" : "#333",
+                      backgroundColor:
+                        selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading) ? "#555" : "#333",
                       color: "white",
                       width: "100%",
                       height: "60px",
@@ -883,14 +798,19 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                       borderRadius: "8px",
                       boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
                       "&:hover": {
-                        backgroundColor: buttonsEnabled ? "#777" : "#333",
-                        boxShadow: buttonsEnabled
-                          ? "0 4px 8px rgba(0, 0, 0, 0.4)"
-                          : "none",
-                        transform: buttonsEnabled ? "scale(1.05)" : "none",
+                        backgroundColor:
+                          selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading) ? "#777" : "#333",
+                        boxShadow:
+                          selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading)
+                            ? "0 4px 8px rgba(0, 0, 0, 0.4)"
+                            : "none",
+                        transform:
+                          selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading) ? "scale(1.05)" : "none",
                       },
                       transition: "all 0.2s ease-in-out",
-                      opacity: buttonsEnabled ? 1 : 0.5,
+                      opacity: selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading) ? 1 : 0.5,
+                      cursor:
+                        selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading) ? "pointer" : "not-allowed",
                     }}
                   >
                     {num}
@@ -901,8 +821,9 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                 <Button
                   variant="contained"
                   onClick={() => handleNumpadClick("0")}
+                  disabled={selectedTask === "FLOAT ENTRY" ? false : !buttonsEnabled || isLoading}
                   sx={{
-                    backgroundColor: "#555",
+                    backgroundColor: selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading) ? "#555" : "#333",
                     color: "white",
                     width: "100%",
                     height: "60px",
@@ -910,11 +831,19 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                     borderRadius: "8px",
                     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
                     "&:hover": {
-                      backgroundColor: "#777",
-                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
-                      transform: "scale(1.05)",
+                      backgroundColor:
+                        selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading) ? "#777" : "#333",
+                      boxShadow:
+                        selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading)
+                          ? "0 4px 8px rgba(0, 0, 0, 0.4)"
+                          : "none",
+                      transform:
+                        selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading) ? "scale(1.05)" : "none",
                     },
                     transition: "all 0.2s ease-in-out",
+                    opacity: selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading) ? 1 : 0.5,
+                    cursor:
+                      selectedTask === "FLOAT ENTRY" || (buttonsEnabled && !isLoading) ? "pointer" : "not-allowed",
                   }}
                 >
                   0
@@ -950,9 +879,9 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
             <Button
               variant="contained"
               onClick={handleSubmit}
-              disabled={!buttonsEnabled || isLoading}
+              disabled={selectedTask === "FLOAT ENTRY" ? false : !buttonsEnabled || isLoading}
               sx={{
-                backgroundColor: buttonsEnabled ? "#22f15a" : "#333",
+                backgroundColor: selectedTask === "FLOAT ENTRY" || buttonsEnabled ? "#22f15a" : "#333",
                 color: "white",
                 width: "90%",
                 padding: "12px",
@@ -963,33 +892,29 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
                 mb: 2,
                 boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
                 "&:hover": {
-                  backgroundColor: buttonsEnabled ? "#1cc940" : "#333",
-                  boxShadow: buttonsEnabled
-                    ? "0 4px 8px rgba(0, 0, 0, 0.4)"
-                    : "none",
-                  transform: buttonsEnabled ? "scale(1.02)" : "none",
+                  backgroundColor: selectedTask === "FLOAT ENTRY" || buttonsEnabled ? "#1cc940" : "#333",
+                  boxShadow: selectedTask === "FLOAT ENTRY" || buttonsEnabled ? "0 4px 8px rgba(0, 0, 0, 0.4)" : "none",
+                  transform: selectedTask === "FLOAT ENTRY" || buttonsEnabled ? "scale(1.02)" : "none",
                 },
                 transition: "all 0.2s ease-in-out",
-                opacity: buttonsEnabled ? 1 : 0.5,
+                opacity: selectedTask === "FLOAT ENTRY" || buttonsEnabled ? 1 : 0.5,
               }}
             >
               Submit
             </Button>
           </Box>
-        // ) : selectedTask === "PRINT X REPORT" ? (
-        //   <Typography variant="body1" sx={{ color: "white", maxWidth: "90%" }}>
-        //     X-Report is being generated and will open in a new window for
-        //     printing...
-        //   </Typography>
+          // ) : selectedTask === "PRINT X REPORT" ? (
+          //   <Typography variant="body1" sx={{ color: "white", maxWidth: "90%" }}>
+          //     X-Report is being generated and will open in a new window for
+          //     printing...
+          //   </Typography>
         ) : selectedTask === "PRINT Z REPORT" ? (
           <Typography variant="body1" sx={{ color: "white", maxWidth: "90%" }}>
             Z-Report is being generated...
           </Typography>
         ) : (
           <Typography variant="body1" sx={{ color: "white", maxWidth: "90%" }}>
-            {selectedTask
-              ? `Details or actions for ${selectedTask} will go here.`
-              : "Select a task to view details."}
+            {selectedTask ? `Details or actions for ${selectedTask} will go here.` : "Select a task to view details."}
           </Typography>
         )}
       </Box>
@@ -1034,8 +959,7 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
               mb: 3,
             }}
           >
-            Is the Amount correct?{" "}
-            {currentTask === "STARTING AMOUNT" ? startingAmount : floatEntry}
+            Is the Amount correct? {currentTask === "STARTING AMOUNT" ? startingAmount : floatEntry}
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center", pb: 2, gap: 2 }}>
@@ -1089,16 +1013,12 @@ const DrawerContent = ({ selectedTask, onClose, employeeName }) => {
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
     </Box>
-  );
-};
+  )
+}
 
-export default DrawerContent;
+export default DrawerContent
