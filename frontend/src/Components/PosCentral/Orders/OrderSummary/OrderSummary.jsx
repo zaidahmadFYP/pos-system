@@ -57,61 +57,59 @@ const OrderSummary = ({
     }
   }, [recalledTransaction])
 
-
-
   useEffect(() => {
     // Only activate scanner when drawer is open
     if (!drawerOpen) return
-  
+
     // Scan state variables
-    let buffer = '';
-    let lastKeyTime = 0;
-    const SCANNER_TIMEOUT = 50; // Typical QR scanners send characters very quickly
-  
+    let buffer = ""
+    let lastKeyTime = 0
+    const SCANNER_TIMEOUT = 50 // Typical QR scanners send characters very quickly
+
     // Function to handle keydown events from the scanner
     const handleScan = (event) => {
       // Ignore if it's a modifier key
       if (event.key === "Shift" || event.key === "Control" || event.key === "Alt") {
-        return;
+        return
       }
-  
-      const currentTime = new Date().getTime();
-      
+
+      const currentTime = new Date().getTime()
+
       // If there's a significant delay, assume it's a new scan or manual input
       if (currentTime - lastKeyTime > SCANNER_TIMEOUT && buffer.length > 0) {
-        console.log("Timeout detected, resetting scan buffer");
-        buffer = '';
-        setScanBuffer('');
-        setScanDebug([]);
+        console.log("Timeout detected, resetting scan buffer")
+        buffer = ""
+        setScanBuffer("")
+        setScanDebug([])
       }
-      
-      lastKeyTime = currentTime;
-  
+
+      lastKeyTime = currentTime
+
       // Debug: Log each key as it comes in
-      console.log(`Key pressed: "${event.key}" (charCode: ${event.key.charCodeAt(0)})`);
-  
+      console.log(`Key pressed: "${event.key}" (charCode: ${event.key.charCodeAt(0)})`)
+
       // If Enter key is pressed, process the complete scan
       if (event.key === "Enter") {
         if (buffer) {
           // Log the raw scan buffer for debugging
-          console.log("Raw QR Code scanned:", buffer);
-          console.log("Raw QR Code length:", buffer.length);
-          
+          console.log("Raw QR Code scanned:", buffer)
+          console.log("Raw QR Code length:", buffer.length)
+
           // Preserve the original transaction ID exactly as scanned
-          let transactionID = buffer;
-          
+          let transactionID = buffer
+
           // Check if the transaction ID should have leading zeros but doesn't
           // Most transaction IDs in your system appear to be 6 digits with leading zeros
           if (/^\d+$/.test(transactionID) && transactionID.length < 6) {
             // Pad with leading zeros to make it 6 digits
-            const paddedID = transactionID.padStart(6, '0');
-            console.log(`Adding leading zeros: "${transactionID}" → "${paddedID}"`);
-            transactionID = paddedID;
+            const paddedID = transactionID.padStart(6, "0")
+            console.log(`Adding leading zeros: "${transactionID}" → "${paddedID}"`)
+            transactionID = paddedID
           }
-          
+
           // Log for debugging
-          console.log("Processing transaction ID:", transactionID);
-          
+          console.log("Processing transaction ID:", transactionID)
+
           // Log available transaction IDs for debugging
           console.log(
             "Transactions available:",
@@ -119,55 +117,57 @@ const OrderSummary = ({
               id: t.transactionID,
               type: typeof t.transactionID,
               stringValue: String(t.transactionID),
-            }))
-          );
-  
+            })),
+          )
+
           // Find the transaction with this ID - try exact string match first
-          let transaction = transactions.find((t) => {
+          const transaction = transactions.find((t) => {
             // Convert both to strings for consistent comparison
-            const transIdStr = String(t.transactionID);
-            
+            const transIdStr = String(t.transactionID)
+
             // Try exact match first (preferred)
             if (transIdStr === transactionID) {
-              console.log(`Found exact match: ${transIdStr} = ${transactionID}`);
-              return true;
+              console.log(`Found exact match: ${transIdStr} = ${transactionID}`)
+              return true
             }
-            
+
             // If database stores IDs without leading zeros, pad them for comparison
             if (/^\d+$/.test(transIdStr) && transIdStr.length < 6) {
-              const paddedDbId = transIdStr.padStart(6, '0');
+              const paddedDbId = transIdStr.padStart(6, "0")
               if (paddedDbId === transactionID) {
-                console.log(`Found match after padding database ID: ${transIdStr} → ${paddedDbId} = ${transactionID}`);
-                return true;
+                console.log(`Found match after padding database ID: ${transIdStr} → ${paddedDbId} = ${transactionID}`)
+                return true
               }
             }
-            
+
             // If QR code might be scanned without leading zeros but DB has them
             if (transIdStr.length === 6 && /^0+\d+$/.test(transIdStr)) {
-              const numericDbId = parseInt(transIdStr, 10).toString();
+              const numericDbId = Number.parseInt(transIdStr, 10).toString()
               if (numericDbId === transactionID) {
-                console.log(`Found match by comparing numeric values: ${transIdStr} → ${numericDbId} = ${transactionID}`);
-                return true;
+                console.log(
+                  `Found match by comparing numeric values: ${transIdStr} → ${numericDbId} = ${transactionID}`,
+                )
+                return true
               }
             }
-            
-            return false;
-          });
-  
+
+            return false
+          })
+
           if (transaction) {
             // Don't close the drawer immediately
             // Use setTimeout to ensure this happens after the current render cycle
             setTimeout(() => {
-              console.log("Recalling transaction:", transaction);
+              console.log("Recalling transaction:", transaction)
               const recalledItems = transaction.items.map((item) => ({
                 id: item.itemId || item.id,
                 name: item.itemName,
                 quantity: item.itemQuantity,
                 price: item.price || 0,
-              }));
-              console.log("Mapped recalled items:", recalledItems);
-              onClearItems();
-              
+              }))
+              console.log("Mapped recalled items:", recalledItems)
+              onClearItems()
+
               // Navigate to the order page
               navigate("/loop/orders", {
                 state: {
@@ -181,55 +181,57 @@ const OrderSummary = ({
                     transactionStatus: transaction.transactionStatus,
                   },
                 },
-              });
-              
+              })
+
               // Close the drawer after successful recall
-              setDrawerOpen(false);
-              console.log("Drawer closed after recalling transaction");
-              
-              logError("Software", `Transaction #${transactionID} recalled via QR scan`);
-            }, 0);
+              setDrawerOpen(false)
+              console.log("Drawer closed after recalling transaction")
+
+              logError("Software", `Transaction #${transactionID} recalled via QR scan`)
+            }, 0)
           } else {
             setSnackbar({
               open: true,
               message: `Transaction #${transactionID} not found`,
               severity: "error",
-            });
-            logError("Software", `Transaction #${transactionID} not found when scanned`);
+            })
+            logError("Software", `Transaction #${transactionID} not found when scanned`)
           }
         }
         // Reset buffer after processing
-        buffer = '';
-        setScanBuffer('');
-        setScanDebug([]);
+        buffer = ""
+        setScanBuffer("")
+        setScanDebug([])
       } else {
         // Add character to buffer
-        buffer += event.key;
-        
+        buffer += event.key
+
         // Update the state for display purposes
-        setScanBuffer(buffer);
-        
+        setScanBuffer(buffer)
+
         // Store debug info
-        setScanDebug(prev => [...prev, {
-          key: event.key,
-          charCode: event.key.charCodeAt(0),
-          keyCode: event.keyCode || 0,
-          currentBuffer: buffer
-        }]);
+        setScanDebug((prev) => [
+          ...prev,
+          {
+            key: event.key,
+            charCode: event.key.charCodeAt(0),
+            keyCode: event.keyCode || 0,
+            currentBuffer: buffer,
+          },
+        ])
       }
-    };
-  
+    }
+
     // Add event listener
-    window.addEventListener("keydown", handleScan);
-  
+    window.addEventListener("keydown", handleScan)
+
     // Clean up
     return () => {
-      window.removeEventListener("keydown", handleScan);
-      setScanBuffer("");
-      setScanDebug([]);
-    };
-  }, [drawerOpen, transactions, setDrawerOpen, navigate, onClearItems, setSnackbar, logError]);
-
+      window.removeEventListener("keydown", handleScan)
+      setScanBuffer("")
+      setScanDebug([])
+    }
+  }, [drawerOpen, transactions, setDrawerOpen, navigate, onClearItems, setSnackbar, logError])
 
   console.log("Selected items in OrderSummary:", selectedItems)
 
@@ -408,6 +410,7 @@ const OrderSummary = ({
           tax,
           total,
           transactionID: result.transactionID,
+          paymentMethod: selectedPaymentMethod, // Pass the payment method here
         })
 
         logError("Software", `Transaction slip generated for Transaction #${result.transactionID}`)
@@ -566,121 +569,120 @@ const OrderSummary = ({
         </Box>
       )}
 
-<Paper 
-  sx={{ 
-    mb: 3,
-    overflowX: "hidden",
-    // Set a max height that fits about 5 items plus the header
-    maxHeight: "250px", // Adjust this value based on your row height
-    // Enable vertical scrolling
-    overflowY: "auto"
-  }}
->
-  <Table
-    sx={{
-      minWidth: { xs: 500, md: 650 },
-      "& .MuiTableCell-root": {
-        color: "white",
-        borderColor: "#333",
-        backgroundColor: "#1E1E1E",
-        fontSize: { xs: "0.8rem", md: "0.875rem" },
-        padding: { xs: "8px 4px", md: "16px" },
-      },
-    }}
-  >
-    <TableHead>
-      <TableRow>
-        <TableCell 
-          sx={{ 
-            position: "sticky", 
-            top: 0, 
-            backgroundColor: "#252525", 
-            zIndex: 1 
+      <Paper
+        sx={{
+          mb: 3,
+          overflowX: "hidden",
+          // Set a max height that fits about 5 items plus the header
+          maxHeight: "250px", // Adjust this value based on your row height
+          // Enable vertical scrolling
+          overflowY: "auto",
+        }}
+      >
+        <Table
+          sx={{
+            minWidth: { xs: 500, md: 650 },
+            "& .MuiTableCell-root": {
+              color: "white",
+              borderColor: "#333",
+              backgroundColor: "#1E1E1E",
+              fontSize: { xs: "0.8rem", md: "0.875rem" },
+              padding: { xs: "8px 4px", md: "16px" },
+            },
           }}
         >
-          ITEM
-        </TableCell>
-        <TableCell 
-          align="center" 
-          sx={{ 
-            position: "sticky", 
-            top: 0, 
-            backgroundColor: "#252525", 
-            zIndex: 1 
-          }}
-        >
-          QUANTITY
-        </TableCell>
-        <TableCell 
-          align="right" 
-          sx={{ 
-            position: "sticky", 
-            top: 0, 
-            backgroundColor: "#252525", 
-            zIndex: 1 
-          }}
-        >
-          PRICE
-        </TableCell>
-        <TableCell 
-          align="right" 
-          sx={{ 
-            position: "sticky", 
-            top: 0, 
-            backgroundColor: "#252525", 
-            zIndex: 1 
-          }}
-        >
-          TOTAL
-        </TableCell>
-        <TableCell 
-          align="center" 
-          sx={{ 
-            position: "sticky", 
-            top: 0, 
-            backgroundColor: "#252525", 
-            zIndex: 1 
-          }}
-        >
-          ACTION
-        </TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {selectedItems.map((item) => (
-        <TableRow key={item.id}>
-          <TableCell>{item.name}</TableCell>
-          <TableCell align="center">{item.quantity}</TableCell>
-          <TableCell align="right">{(item.price || 0).toFixed(2)}</TableCell>
-          <TableCell align="right">{((item.price || 0) * (item.quantity || 0)).toFixed(2)}</TableCell>
-          <TableCell align="center">
-            <IconButton
-              onClick={() => {
-                onDeleteItem(item.id)
-                logError("Software", `Deleted item ${item.name} from order`)
-              }}
-              sx={{
-                color: "#FF4444",
-                "&:hover": { backgroundColor: "rgba(255, 68, 68, 0.1)" },
-                padding: { xs: 0.5, md: 1 },
-              }}
-            >
-              <DeleteOutlineIcon fontSize="small" />
-            </IconButton>
-          </TableCell>
-        </TableRow>
-      ))}
-      {selectedItems.length === 0 && (
-        <TableRow>
-          <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
-            No items selected
-          </TableCell>
-        </TableRow>
-      )}
-    </TableBody>
-  </Table>
-</Paper>
-
+          <TableHead>
+            <TableRow>
+              <TableCell
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  backgroundColor: "#252525",
+                  zIndex: 1,
+                }}
+              >
+                ITEM
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  backgroundColor: "#252525",
+                  zIndex: 1,
+                }}
+              >
+                QUANTITY
+              </TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  backgroundColor: "#252525",
+                  zIndex: 1,
+                }}
+              >
+                PRICE
+              </TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  backgroundColor: "#252525",
+                  zIndex: 1,
+                }}
+              >
+                TOTAL
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  backgroundColor: "#252525",
+                  zIndex: 1,
+                }}
+              >
+                ACTION
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {selectedItems.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>{item.name}</TableCell>
+                <TableCell align="center">{item.quantity}</TableCell>
+                <TableCell align="right">{(item.price || 0).toFixed(2)}</TableCell>
+                <TableCell align="right">{((item.price || 0) * (item.quantity || 0)).toFixed(2)}</TableCell>
+                <TableCell align="center">
+                  <IconButton
+                    onClick={() => {
+                      onDeleteItem(item.id)
+                      logError("Software", `Deleted item ${item.name} from order`)
+                    }}
+                    sx={{
+                      color: "#FF4444",
+                      "&:hover": { backgroundColor: "rgba(255, 68, 68, 0.1)" },
+                      padding: { xs: 0.5, md: 1 },
+                    }}
+                  >
+                    <DeleteOutlineIcon fontSize="small" />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+            {selectedItems.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                  No items selected
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </Paper>
 
       {error && (
         <Typography variant="body2" sx={{ color: "#FF4444", mb: 2, textAlign: "center" }}>
