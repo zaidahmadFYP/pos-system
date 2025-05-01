@@ -310,7 +310,7 @@ const upload = multer({
 });
 
 const PRINTER_NAMES = {
-  win32: "cashierprint",
+  win32: "BIXOLON SRP-E300 (Copy 1)",
   darwin: "HP_LaserJet_Professional_P_1102w",
 };
 

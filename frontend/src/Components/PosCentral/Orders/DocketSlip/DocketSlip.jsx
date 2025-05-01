@@ -122,28 +122,20 @@ const generateDocketSlip = async ({
     const footerLogoUrl = "/images/cheezious_logo.png";
     const footerLogoData = await loadImageAsBase64(footerLogoUrl);
 
-    const itemsHeight = selectedItems.reduce((height, item) => {
-      const lines = Math.ceil(item.name.length / 25);
-      return height + lines * 5 + 8;
-    }, 0);
-
-    const qrCodeHeight = 25;
-    const pdfHeight = 140 + itemsHeight + qrCodeHeight;
-    console.log(`Calculated PDF height: ${pdfHeight}mm`);
-
+    // Create PDF with the exact docker paper size of 80 x 3276 mm
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
-      format: [80, pdfHeight],
+      format: [80, 3276], // Using the specific dock paper size
     });
 
     doc.setFont("courier", "normal");
-    let y = 10;
+    let y = 5; // Reduced top padding from 10 to 5
 
     const headerTargetWidth = 35;
     const headerAspectRatio = headerLogoData.width / headerLogoData.height;
     const headerCalculatedHeight = headerTargetWidth / headerAspectRatio;
-    const headerImgX = (80 - headerTargetWidth) / 2;
+    const headerImgX = (80 - headerTargetWidth) / 2 - 2; // Shifted slightly left
 
     console.log(`Adding header logo at y=${y}`);
     doc.addImage(
@@ -158,7 +150,7 @@ const generateDocketSlip = async ({
 
     if (qrCodeData) {
       const qrTargetSize = 25;
-      const qrX = (80 - qrTargetSize) / 2;
+      const qrX = (80 - qrTargetSize) / 2 - 2; // Shifted QR code slightly to the left
       console.log(`Adding QR code at y=${y}`);
       doc.addImage(qrCodeData.dataURL, "PNG", qrX, y, qrTargetSize, qrTargetSize);
       y += qrTargetSize + 3;
@@ -166,21 +158,21 @@ const generateDocketSlip = async ({
 
     doc.setDrawColor(150, 150, 150);
     doc.setLineWidth(0.5);
-    doc.line(5, y, 75, y);
+    doc.line(3, y, 73, y); // Adjusted line position slightly to the left
     y += 4;
 
     doc.setFontSize(11);
     doc.setFont("courier", "bold");
     if (type === "paid") {
-      doc.text("***** PAID TRANSACTION RECEIPT *****", 40, y, { align: "center" });
+      doc.text("***** PAID TRANSACTION RECEIPT *****", 38, y, { align: "center" });
     } else {
-      doc.text("***** TEMPORARY RECEIPT *****", 40, y, { align: "center" });
+      doc.text("***** TEMPORARY RECEIPT *****", 38, y, { align: "center" });
     }
     y += 6;
 
     doc.setFontSize(9);
     doc.setFont("courier", "normal");
-    doc.text("CASHIER #3", 40, y, { align: "center" });
+    doc.text("CASHIER #3", 38, y, { align: "center" });
     y += 4;
 
     const date = new Date();
@@ -196,11 +188,11 @@ const generateDocketSlip = async ({
       hour12: false,
     });
 
-    doc.text(`${formattedDate}, ${formattedTime}`, 40, y, { align: "center" });
+    doc.text(`${formattedDate}, ${formattedTime}`, 38, y, { align: "center" });
     y += 4;
 
     doc.setFont("courier", "bold");
-    doc.text(`Transaction ID: ${transactionID}`, 40, y, { align: "center" });
+    doc.text(`Transaction ID: ${transactionID}`, 38, y, { align: "center" });
     y += 6;
 
     doc.setDrawColor(100, 100, 100);
@@ -210,7 +202,7 @@ const generateDocketSlip = async ({
 
     doc.setFontSize(11);
     doc.setFont("courier", "bold");
-    doc.text("Items", 8, y);
+    doc.text("Items", 6, y);
     y += 5;
     doc.setFontSize(9);
     doc.setFont("courier", "normal");
@@ -218,7 +210,7 @@ const generateDocketSlip = async ({
     selectedItems.forEach((item, index) => {
       if (index % 2 === 0) {
         doc.setFillColor(248, 248, 248);
-        doc.rect(5, y - 2, 70, 7 + (item.name.length > 25 ? 4 : 0), "F");
+        doc.rect(3, y - 2, 70, 7 + (item.name.length > 25 ? 4 : 0), "F");
       }
 
       const itemName = `ITEM ${index + 1}: ${item.name}`;
@@ -226,14 +218,23 @@ const generateDocketSlip = async ({
       const splitText = doc.splitTextToSize(itemName, maxWidth);
 
       splitText.forEach((line, lineIndex) => {
-        doc.text(line, 8, y + lineIndex * 4);
+        doc.text(line, 6, y + lineIndex * 4);
       });
 
       const lineCount = splitText.length;
       y += (lineCount - 1) * 4;
 
-      doc.text(`X${item.quantity}`, 15, y + 4);
-      doc.text(`$${item.price.toFixed(2)}`, 72, y + 4, { align: "right" });
+      doc.text(`X${item.quantity}`, 13, y + 4);
+      
+      // Only print price on paid receipts, not temporary ones
+      if (type === "paid") {
+        doc.text(`${item.price.toFixed(2)}`, 70, y + 4, { align: "right" });
+      }
+      // Commented out price display for temporary receipts
+      // else {
+      //   doc.text(`${item.price.toFixed(2)}`, 70, y + 4, { align: "right" });
+      // }
+      
       y += 8;
     });
 
@@ -246,29 +247,62 @@ const generateDocketSlip = async ({
     doc.line(5, y, 75, y);
     y += 5;
 
-    doc.setFontSize(11);
-    doc.setFont("courier", "bold");
-    doc.text("Summary", 8, y);
-    y += 5;
+    // Display the Summary section with pricing details only for paid receipts
+    if (type === "paid") {
+      doc.setFontSize(11);
+      doc.setFont("courier", "bold");
+      doc.text("Summary", 6, y);
+      y += 5;
 
-    doc.setFontSize(9);
-    doc.setFont("courier", "normal");
-    doc.text("SUBTOTAL", 8, y);
-    doc.text(`$${subtotal.toFixed(2)}`, 72, y, { align: "right" });
-    y += 4;
+      doc.setFontSize(9);
+      doc.setFont("courier", "normal");
+      
+      doc.text("SUBTOTAL", 6, y);
+      doc.text(`${subtotal.toFixed(2)}`, 70, y, { align: "right" });
+      y += 4;
 
-    doc.text("TAX", 8, y);
-    doc.text(`$${tax.toFixed(2)}`, 72, y, { align: "right" });
-    y += 5;
+      doc.text("TAX", 6, y);
+      doc.text(`${tax.toFixed(2)}`, 70, y, { align: "right" });
+      y += 5;
 
-    doc.setFillColor(240, 240, 240);
-    doc.rect(5, y - 2, 70, 8, "F");
+      doc.setFillColor(240, 240, 240);
+      doc.rect(3, y - 2, 70, 8, "F");
 
-    doc.setFontSize(11);
-    doc.setFont("courier", "bold");
-    doc.text("TOTAL AMOUNT", 8, y + 2);
-    doc.text(`$${total.toFixed(2)}`, 72, y + 2, { align: "right" });
-    y += 8;
+      doc.setFontSize(11);
+      doc.setFont("courier", "bold");
+      doc.text("TOTAL AMOUNT", 6, y + 2);
+      doc.text(`${total.toFixed(2)}`, 70, y + 2, { align: "right" });
+      y += 8;
+    }
+    // Commented out entire Summary section for temporary receipts
+    /*
+    else {
+      doc.setFontSize(11);
+      doc.setFont("courier", "bold");
+      doc.text("Summary", 6, y);
+      y += 5;
+
+      doc.setFontSize(9);
+      doc.setFont("courier", "normal");
+      
+      doc.text("SUBTOTAL", 6, y);
+      // doc.text(`${subtotal.toFixed(2)}`, 70, y, { align: "right" });
+      y += 4;
+
+      doc.text("TAX", 6, y);
+      // doc.text(`${tax.toFixed(2)}`, 70, y, { align: "right" });
+      y += 5;
+
+      doc.setFillColor(240, 240, 240);
+      doc.rect(3, y - 2, 70, 8, "F");
+
+      doc.setFontSize(11);
+      doc.setFont("courier", "bold");
+      doc.text("TOTAL AMOUNT", 6, y + 2);
+      // doc.text(`${total.toFixed(2)}`, 70, y + 2, { align: "right" });
+      y += 8;
+    }
+    */
 
     if (type === "paid") {
       doc.setDrawColor(130, 130, 130);
@@ -278,10 +312,10 @@ const generateDocketSlip = async ({
 
       doc.setFontSize(9);
       doc.setFont("courier", "bold");
-      doc.text(`PAYMENT METHOD: ${paymentMethod.toUpperCase()}`, 40, y, { align: "center" });
+      doc.text(`PAYMENT METHOD: ${paymentMethod.toUpperCase()}`, 38, y, { align: "center" });
       y += 4;
 
-      doc.text("STATUS: PAID", 40, y + 1, { align: "center" });
+      doc.text("STATUS: PAID", 38, y + 1, { align: "center" });
       y += 7;
     }
 
@@ -292,7 +326,7 @@ const generateDocketSlip = async ({
 
     doc.setFontSize(10);
     doc.setFont("courier", "bold");
-    doc.text("THANK YOU FOR ORDERING!", 40, y, { align: "center" });
+    doc.text("THANK YOU FOR ORDERING!", 38, y, { align: "center" });
     y += 5;
 
     doc.setFontSize(7);
@@ -305,7 +339,7 @@ const generateDocketSlip = async ({
     const footerLogoHeight = footerLogoWidth / footerLogoAspectRatio;
 
     const combinedWidth = poweredByWidth + footerLogoWidth + 1;
-    const startX = 40 - combinedWidth / 2;
+    const startX = 38 - combinedWidth / 2;
 
     const textHeight = doc.getTextDimensions(poweredByText).h;
     const maxHeight = Math.max(textHeight, footerLogoHeight);
