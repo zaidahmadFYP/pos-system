@@ -7,31 +7,31 @@ const BOM = require("../models/bom");
 const mongoose = require('mongoose');
 
 // Get all menu categories with their items
-router.get("/categories", async (req, res) => {
-    try {
-      const categories = await MenuCategory.find().sort('order');
-      const items = await MenuItem.find({ isAvailable: true }).populate('category');
+// router.get("/categories", async (req, res) => {
+//     try {
+//       const categories = await MenuCategory.find().sort('order');
+//       const items = await MenuItem.find({ isAvailable: true }).populate('category');
   
-      const menuData = categories.map(category => ({
-        id: category.id,
-        name: category.name,
-        columns: category.columns,
-        smallText: category.smallText,
-        items: items
-          .filter(item => item.category && item.category._id.toString() === category._id.toString())
-          .map(item => ({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            isPizza: item.isPizza
-          }))
-      }));
+//       const menuData = categories.map(category => ({
+//         id: category.id,
+//         name: category.name,
+//         columns: category.columns,
+//         smallText: category.smallText,
+//         items: items
+//           .filter(item => item.category && item.category._id.toString() === category._id.toString())
+//           .map(item => ({
+//             id: item.id,
+//             name: item.name,
+//             price: item.price,
+//             isPizza: item.isPizza
+//           }))
+//       }));
   
-      res.json(menuData);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  });
+//       res.json(menuData);
+//     } catch (error) {
+//       res.status(500).json({ message: error.message });
+//     }
+//   });
 
 // router.get("/categories", async (req, res) => {
 //   try {
@@ -66,6 +66,70 @@ router.get("/categories", async (req, res) => {
 //     res.status(500).json({ message: "Error fetching FinishedGoods" });
 //   }
 // });
+
+// / Get all menu categories with their items
+router.get("/categories", async (req, res) => {
+  try {
+    const categories = await MenuCategory.find().sort('order');
+    
+    // Get items from both collections
+    const menuItems = await MenuItem.find({ isAvailable: true }).populate('category');
+    const finishedGoods = await FinishedGoods.find().populate('category', 'name id _id');
+    
+    console.log(`Found ${menuItems.length} menu items and ${finishedGoods.length} finished goods`);
+    
+    const menuData = categories.map(category => {
+      // Get regular menu items for this category
+      const categoryMenuItems = menuItems
+        .filter(item => item.category && item.category._id.toString() === category._id.toString())
+        .map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          isPizza: item.isPizza,
+          source: 'menuItem' // Add source for debugging
+        }));
+      
+      // Get finished goods for this category
+      const categoryFinishedGoods = finishedGoods
+        .filter(item => {
+          // Check if category exists and matches
+          if (!item.category) return false;
+          
+          // Compare category IDs
+          const itemCategoryId = item.category._id.toString();
+          const categoryId = category._id.toString();
+          
+          return itemCategoryId === categoryId;
+        })
+        .map(item => ({
+          id: item.id || item._id.toString(),
+          name: item.name,
+          price: item.price || 0,
+          isPizza: item.isPizza || false,
+          source: 'finishedGood' // Add source for debugging
+        }));
+      
+      // Combine both types of items
+      const combinedItems = [...categoryMenuItems, ...categoryFinishedGoods];
+      
+      console.log(`Category ${category.name} has ${categoryMenuItems.length} menu items and ${categoryFinishedGoods.length} finished goods`);
+      
+      return {
+        id: category.id,
+        name: category.name,
+        columns: category.columns,
+        smallText: category.smallText,
+        items: combinedItems
+      };
+    });
+    
+    res.json(menuData);
+  } catch (error) {
+    console.error("Error fetching menu categories with items:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 router.get("/finishedgoods", async (req, res) => {
   try {
