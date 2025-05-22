@@ -1,0 +1,310 @@
+import React, { useState } from 'react';
+import { Box, Paper, Typography, Button, Drawer, Accordion, AccordionSummary, AccordionDetails, Avatar, TextField, InputAdornment } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import LockIcon from '@mui/icons-material/Lock'; 
+
+
+const users = [
+  { name: 'Omer Shahzad', email: 'omershahzad1000@loop.com', password: 'omer123' },
+  { name: 'Zaid Ahmad', email: 'zaidahmad123@loop.com', password: 'zaid123' },
+  { name: 'Muhammad Shariq Shoaib', email: 'shariqshoaib10@loop.com', password: 'shariq123' },
+  { name: 'Muhammad Adeel Sarwar', email: 'adeelsarwar90@loop.com', password: 'adeel123' },
+];
+
+const Login = () => {
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [password, setPassword] = useState('');
+
+  // Drawer visibility
+  const toggleDrawer = () => {
+    setOpen(!open);
+  };
+
+  // User selection
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+    setPassword(''); // Reset the password field when a user is selected
+    setOpen(false); // Close the drawer when a user is selected
+  };
+
+  // Handle user change
+  const handleChangeUser = () => {
+    setSelectedUser(null); 
+    setPassword(''); 
+    toggleDrawer(); 
+  };
+
+  return (
+    <Box
+      sx={{
+        width: '100vw',
+        height: '100vh',
+        backgroundImage: 'url("/images/signin_background.png")', 
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        filter: open ? 'blur(5px)' : 'none',
+        transition: 'filter 0.3s ease',
+      }}
+    >
+      <Box
+        sx={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Paper
+          elevation={6}
+          sx={{
+            backgroundColor: '#1f1f1f',
+            borderRadius: '24px',
+            padding: '32px 48px',
+            width: '560px',
+            color: '#fff',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px',
+            textAlign: 'center',
+          }}
+        >
+          <Typography
+            variant="h4"
+            align="center"
+            sx={{
+              fontFamily: 'Cocon',
+              color: '#f15a22',
+              fontWeight: 'bold',
+              marginBottom: '16px',
+            }}
+          >
+            LOOP POS
+          </Typography>
+
+          {selectedUser ? (
+            <>
+              <TextField
+                label="Username"
+                value={selectedUser.name}
+                disabled
+                fullWidth
+                sx={{
+                  marginBottom: '16px',
+                  backgroundColor: '#2b2b2b',
+                  '& .MuiInputBase-input': {
+                    color: '#fff !important',
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: '#fff !important',
+                  },
+                  '& .Mui-disabled': {
+                    '-webkit-text-fill-color': '#fff !important',
+                  },
+                }}
+                InputProps={{
+                  style: { color: '#fff' },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <LockIcon sx={{ color: '#fff' }} />
+                    </InputAdornment>
+                  ),
+                }}
+                InputLabelProps={{
+                  style: { color: '#fff' },
+                  shrink: true,
+                }}
+              />
+
+              <TextField
+                label="Email"
+                value={selectedUser.email}
+                disabled
+                fullWidth
+                sx={{
+                  marginBottom: '16px',
+                  backgroundColor: '#2b2b2b',
+                  '& .MuiInputBase-input': {
+                    color: '#fff !important',
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: '#fff !important',
+                  },
+                  '& .Mui-disabled': {
+                    '-webkit-text-fill-color': '#fff !important',
+                  },
+                }}
+                InputProps={{
+                  style: { color: '#fff' },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <LockIcon sx={{ color: '#fff' }} />
+                    </InputAdornment>
+                  ),
+                }}
+                InputLabelProps={{
+                  style: { color: '#fff' },
+                  shrink: true,
+                }}
+              />
+
+              <TextField
+                label="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                fullWidth
+                sx={{
+                  marginBottom: '16px',
+                  backgroundColor: '#2b2b2b',
+                  '& .MuiInputBase-input': {
+                    color: '#fff !important',
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: '#fff !important',
+                  },
+                }}
+                InputProps={{
+                  style: { color: '#fff' },
+                }}
+                InputLabelProps={{
+                  style: { color: '#fff' },
+                  shrink: true,
+                }}
+              />
+
+              <Button
+                variant="contained"
+                fullWidth
+                sx={{
+                  backgroundColor: '#f15a22',
+                  color: '#000',
+                  fontWeight: 'bold',
+                  padding: '14px',
+                  borderRadius: '24px',
+                  '&:hover': {
+                    backgroundColor: '#f15a22',
+                  },
+                }}
+              >
+                LOGIN
+              </Button>
+
+              <Button
+                variant="outlined"
+                fullWidth
+                sx={{
+                  marginTop: '12px',
+                  color: '#f15a22',
+                  fontWeight: 'bold',
+                  borderColor: '#f15a22',
+                  borderRadius: '24px',
+                  '&:hover': {
+                    borderColor: '#f15a22',
+                    backgroundColor: '#f15a22',
+                    color: '#000',
+                  },
+                }}
+                onClick={handleChangeUser}
+              >
+                Change User
+              </Button>
+            </>
+          ) : (
+            <>
+              <Typography
+                variant="body2"
+                align="center"
+                sx={{
+                  color: '#fff',
+                  marginBottom: '24px',
+                  fontWeight: '300',
+                }}
+              >
+                Please select a user to continue
+              </Typography>
+
+              <Button
+                variant="contained"
+                fullWidth
+                sx={{
+                  backgroundColor: '#f15a22',
+                  color: '#000',
+                  fontWeight: 'bold',
+                  padding: '14px',
+                  borderRadius: '24px',
+                  '&:hover': {
+                    backgroundColor: '#f15a22',
+                  },
+                }}
+                onClick={toggleDrawer}
+              >
+                Select User
+              </Button>
+            </>
+          )}
+        </Paper>
+      </Box>
+
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={toggleDrawer}
+        sx={{
+          width: '30%',
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: '30%',
+            backgroundColor: '#121212',
+            color: '#fff',
+            borderRadius: '12px 0 0 12px',
+            transition: 'transform 0.2s ease-in-out',
+          },
+        }}
+      >
+        <Box sx={{ padding: '20px' }}>
+          <Typography variant="h6" sx={{ color: '#fff', marginBottom: '20px' }}>
+            Select User:
+          </Typography>
+
+          {users.map((user) => (
+            <Accordion key={user.email} sx={{ marginBottom: '10px', backgroundColor: '#2b2b2b', borderRadius: '8px' }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f15a22' }} />}>
+                <Avatar sx={{ bgcolor: '#f15a22', marginRight: '12px' }}>
+                  {user.name.charAt(0)}
+                </Avatar>
+                <Box>
+                  <Typography sx={{ color: '#fff', fontWeight: 'bold' }}>{user.name}</Typography>
+                  <Typography sx={{ color: '#aaa' }}>{user.email}</Typography>
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    backgroundColor: '#f15a22',
+                    color: '#000',
+                    fontWeight: 'bold',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    '&:hover': {
+                      backgroundColor: '#f15a22',
+                    },
+                  }}
+                  onClick={() => handleUserSelect(user)}
+                >
+                  Select
+                </Button>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Box>
+      </Drawer>
+    </Box>
+  );
+};
+
+export default Login;

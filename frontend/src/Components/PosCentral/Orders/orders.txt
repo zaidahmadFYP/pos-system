@@ -1,0 +1,838 @@
+import React, { useState } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+const Orders = () => {
+  const [showMenu, setShowMenu] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(''); // State to track which menu is active
+  const [showPizzaDeals, setShowPizzaDeals] = useState(false); // For Pizza Deals menu
+  const [showBurgerz, setShowBurgerz] = useState(false); // For Burgerz menu
+  const [showCheezyTreats, setShowCheezyTreats] = useState(false); // For Cheezy Treats menu
+  const [showSpecialPizza, setShowSpecialPizza] = useState(false); // For Special Pizza menu
+  const [showSideOrder, setShowSideOrder] = useState(false); // For Side Order menu
+  const [showSomewhatSooper, setShowSomewhatSooper] = useState(false); // For Somewhat Sooper menu
+  const [showPasta, setShowPasta] = useState(false); // For Pasta menu
+  const [showSomewhatAmazing, setShowSomewhatAmazing] = useState(false); // For Somewhat Amazing menu
+  const [showSomewhatLocal, setShowSomewhatLocal] = useState(false); // For Somewhat Local menu
+  const [showSweetness, setShowSweetness] = useState(false); // For Sweetness menu
+  const [showSandwichesPlatters, setShowSandwichesPlatters] = useState(false); // For Sandwiches and Platters menu
+  const [showWraps, setShowWraps] = useState(false); // For Wraps menu
+  const [showDrinks, setShowDrinks] = useState(false); // For Drinks menu
+  const [showAddons, setShowAddons] = useState(false); // For Addons menu
+  const [showDesserts, setShowDesserts] = useState(false); // For Desserts menu
+
+  const handleDessertsMenu = () => {
+    setShowDesserts(true); // Show desserts menu
+    setActiveMenu(''); // Reset active menu when desserts is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+    setShowSomewhatSooper(false); // Close somewhat sooper menu
+    setShowPasta(false); // Close pasta menu
+    setShowSomewhatAmazing(false); // Close somewhat amazing menu
+    setShowSomewhatLocal(false); // Close somewhat local menu
+    setShowSweetness(false); // Close sweetness menu
+    setShowSandwichesPlatters(false); // Close sandwiches and platters menu
+    setShowWraps(false); // Close wraps menu
+    setShowDrinks(false); // Close drinks menu
+    setShowAddons(false); // Close addons menu
+  };
+
+  const handleDrinksMenu = () => {
+    setShowDrinks(true); // Show drinks menu
+    setActiveMenu(''); // Reset active menu when drinks is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+    setShowSomewhatSooper(false); // Close somewhat sooper menu
+    setShowPasta(false); // Close pasta menu
+    setShowSomewhatAmazing(false); // Close somewhat amazing menu
+    setShowSomewhatLocal(false); // Close somewhat local menu
+    setShowSweetness(false); // Close sweetness menu
+    setShowSandwichesPlatters(false); // Close sandwiches and platters menu
+    setShowWraps(false); // Close wraps menu
+  };
+
+  const handleWrapsMenu = () => {
+    setShowWraps(true); // Show wraps menu
+    setActiveMenu(''); // Reset active menu when wraps is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+    setShowSomewhatSooper(false); // Close somewhat sooper menu
+    setShowPasta(false); // Close pasta menu
+    setShowSomewhatAmazing(false); // Close somewhat amazing menu
+    setShowSomewhatLocal(false); // Close somewhat local menu
+    setShowSweetness(false); // Close sweetness menu
+    setShowSandwichesPlatters(false); // Close sandwiches and platters menu
+  };
+
+
+  const handleSomewhatAmazingMenu = () => {
+    setShowSomewhatAmazing(true); // Show somewhat amazing menu
+    setActiveMenu(''); // Reset active menu when somewhat amazing is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+    setShowSomewhatSooper(false); // Close somewhat sooper menu
+    setShowPasta(false); // Close pasta menu
+  };
+
+  const handleSomewhatLocalMenu = () => {
+    setShowSomewhatLocal(true); // Show somewhat local menu
+    setActiveMenu(''); // Reset active menu when somewhat local is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+    setShowSomewhatSooper(false); // Close somewhat sooper menu
+    setShowPasta(false); // Close pasta menu
+    setShowSomewhatAmazing(false); // Close somewhat amazing menu
+  };
+
+  const handleSomewhatSooperMenu = () => {
+    setShowSomewhatSooper(true); // Show somewhat sooper menu
+    setActiveMenu(''); // Reset active menu when somewhat sooper is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+  };
+  
+  const handleSideOrderMenu = () => {
+    setShowSideOrder(true); // Show side order menu
+    setActiveMenu(''); // Reset active menu when side order is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+  };
+  
+  const handleStartersMenu = () => {
+    setActiveMenu('starters'); // Activate starters menu
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+  };
+  
+  const handlePizzaDealsMenu = () => {
+    setShowPizzaDeals(true); // Show pizza deals menu
+    setActiveMenu(''); // Reset active menu when pizza deals is clicked
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+  };
+  
+  const handleBurgerzMenu = () => {
+    setShowBurgerz(true); // Show burgerz menu
+    setActiveMenu(''); // Reset active menu when burgerz is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+  };
+  
+  const handleCheezyTreatsMenu = () => {
+    setShowCheezyTreats(true); // Show cheezy treats menu
+    setActiveMenu(''); // Reset active menu when cheezy treats is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+  };
+
+  const handlePastaMenu = () => {
+    setShowPasta(true); // Show pasta menu
+    setActiveMenu(''); // Reset active menu when pasta menu is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+    setShowSomewhatSooper(false); // Close somewhat sooper menu
+  };
+  
+  const handleSpecialPizzaMenu = () => {
+    setShowSpecialPizza(true); // Show special pizza menu
+    setActiveMenu(''); // Reset active menu when special pizza is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSideOrder(false); // Close side order menu
+  };
+
+  const handleSweetnessMenu = () => {
+    setShowSweetness(true); // Show sweetness menu
+    setActiveMenu(''); // Reset active menu when sweetness menu is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+    setShowSomewhatSooper(false); // Close somewhat sooper menu
+    setShowPasta(false); // Close pasta menu
+    setShowSomewhatAmazing(false); // Close somewhat amazing menu
+    setShowSomewhatLocal(false); // Close somewhat local menu
+  };
+
+  const handleSandwichesPlattersMenu = () => {
+    setShowSandwichesPlatters(true); // Show sandwiches and platters menu
+    setActiveMenu(''); // Reset active menu when sandwiches and platters is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+    setShowSomewhatSooper(false); // Close somewhat sooper menu
+    setShowPasta(false); // Close pasta menu
+    setShowSomewhatAmazing(false); // Close somewhat amazing menu
+    setShowSomewhatLocal(false); // Close somewhat local menu
+    setShowSweetness(false); // Close sweetness menu
+  };
+
+  const handleAddonsMenu = () => {
+    setShowAddons(true); // Show addons menu
+    setActiveMenu(''); // Reset active menu when addons is clicked
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+    setShowSomewhatSooper(false); // Close somewhat sooper menu
+    setShowPasta(false); // Close pasta menu
+    setShowSomewhatAmazing(false); // Close somewhat amazing menu
+    setShowSomewhatLocal(false); // Close somewhat local menu
+    setShowSweetness(false); // Close sweetness menu
+    setShowSandwichesPlatters(false); // Close sandwiches and platters menu
+    setShowWraps(false); // Close wraps menu
+    setShowDrinks(false); // Close drinks menu
+  };
+
+  const handleToggleMenu = () => {
+    setShowMenu((prev) => !prev);
+    setActiveMenu(''); // Reset to main menu when toggling
+    setShowPizzaDeals(false); // Close pizza deals menu when toggling
+    setShowBurgerz(false); // Close burgerz menu when toggling
+    setShowCheezyTreats(false); // Close cheezy treats menu when toggling
+    setShowSpecialPizza(false); // Close special pizza menu when toggling
+    setShowSideOrder(false); // Close side order menu when toggling
+    setShowSomewhatSooper(false); // Close somewhat sooper menu when toggling
+    setShowPasta(false); // Close pasta menu when toggling
+    setShowSomewhatAmazing(false); // Close somewhat amazing menu when toggling
+    setShowSomewhatLocal(false); // Close somewhat local menu when toggling
+    setShowSweetness(false); // Close sweetness menu when toggling
+    setShowSandwichesPlatters(false); // Close sandwiches and platters menu when toggling
+    setShowWraps(false); // Close wraps menu when toggling
+    setShowDrinks(false); // Close drinks menu when toggling
+    setShowAddons(false); // Close addons menu when toggling
+    setShowDesserts(false); // Close desserts menu when toggling
+  };
+
+  const handlePreviousMenu = () => {
+    setActiveMenu(''); // Go back to the main menu
+    setShowPizzaDeals(false); // Close pizza deals menu
+    setShowBurgerz(false); // Close burgerz menu
+    setShowCheezyTreats(false); // Close cheezy treats menu
+    setShowSpecialPizza(false); // Close special pizza menu
+    setShowSideOrder(false); // Close side order menu
+    setShowSomewhatSooper(false); // Close somewhat sooper menu
+    setShowPasta(false); // Close pasta menu
+    setShowSomewhatAmazing(false); // Close somewhat amazing menu
+    setShowSomewhatLocal(false); // Close somewhat local menu
+    setShowSweetness(false); // Close sweetness menu
+    setShowSandwichesPlatters(false); // Close sandwiches and platters menu
+    setShowWraps(false); // Close wraps menu
+    setShowDrinks(false); // Close drinks menu
+    setShowAddons(false); // Close addons menu
+    setShowDesserts(false); // Close desserts menu
+    
+  };
+  
+  const buttonStyle = {
+    backgroundColor: '#FFA500',
+    width: 85,
+    height: 85,
+    padding: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    wordWrap: 'break-word',
+    whiteSpace: 'normal',
+    fontSize: '0.75rem',
+  };
+
+  // For buttons with smaller text (for the smaller ones)
+const smallButtonStyle = {
+  ...buttonStyle,
+  fontSize: '0.65rem', // Smaller font size for the smaller buttons
+  minWidth: 100, // Smaller width for these buttons
+};
+
+  return (
+    <Box sx={{ p: 3, backgroundColor: '#121212', minHeight: '100vh', color: 'white', position: 'relative' }}>
+      {/* Header */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Typography variant="h5">Orders</Typography>
+      </Box>
+
+      {/* Buttons in a Column Layout */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, position: 'relative', alignItems: 'flex-start' }}>
+        <Button
+          variant="contained"
+          sx={buttonStyle}
+          onClick={handleToggleMenu}
+        >
+          Quick Menu
+        </Button>
+
+        {showMenu && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', position: 'absolute', left: 100, top: 25 }}>
+            <ArrowForwardIcon sx={{ fontSize: '2rem' }} />
+          </Box>
+        )}
+
+        <Button variant="contained" sx={buttonStyle}>
+          Actions
+        </Button>
+      </Box>
+
+      {/* Conditionally Render Main Menu in a 3x6 Grid Layout */}
+      {showMenu && activeMenu === '' && !showPizzaDeals && !showBurgerz && !showCheezyTreats && !showSpecialPizza && !showSideOrder && !showSomewhatSooper && !showPasta && !showSomewhatAmazing && !showSomewhatLocal && !showSweetness && !showSandwichesPlatters && !showWraps && !showDrinks && !showAddons && !showDesserts && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',  // 3 columns in the grid
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle} onClick={handleStartersMenu}>Starters</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePizzaDealsMenu}>Pizza Deals</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleBurgerzMenu}>Burgerz</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleCheezyTreatsMenu}>Cheezy Treats</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleSpecialPizzaMenu}>Special Pizza</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleSideOrderMenu}>Side Order</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleSomewhatSooperMenu}>Somewhat Sooper</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePastaMenu}>Pasta</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleSomewhatAmazingMenu}>Somewhat Amazing</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleSomewhatLocalMenu}>Somewhat Local</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleSweetnessMenu}>Sweetness</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleSandwichesPlattersMenu}>Sandwiches and Platters</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleWrapsMenu}>Wraps</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleDrinksMenu}>Drinks</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleAddonsMenu}>Addons</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handleDessertsMenu}>Desserts</Button>
+          <Button variant="contained" sx={buttonStyle}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Desserts */}
+      {showDesserts && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for desserts options
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Cheese Cake</Button>
+          <Button variant="contained" sx={buttonStyle}>Cake</Button>
+          <Button variant="contained" sx={buttonStyle}>Milk Cake</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Addons */}
+      {showAddons && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for addons
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={smallButtonStyle}>Extra Tikka</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Extra Black Pepper</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Extra Cheese</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Extra Fajita</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Extra Grilled/Smoke</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Extra Jamaican</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Extra Mughlai</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Deal With Addition of (Reg Drink & Reg Fries)</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Mayo Dip Sauce (Pack)</Button>
+          <Button variant="contained" sx={smallButtonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Side Order */}
+      {showSideOrder && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for side order
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Chicken Nuggets 5PCS</Button>
+          <Button variant="contained" sx={buttonStyle}>Fried Chicken 1PCS</Button>
+          <Button variant="contained" sx={buttonStyle}>Fried Chicken 3PCS</Button>
+          <Button variant="contained" sx={buttonStyle}>Regular Fries</Button>
+          <Button variant="contained" sx={buttonStyle}>Large Fries</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Drinks */}
+      {showDrinks && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for drinks options
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>7UP</Button>
+          <Button variant="contained" sx={buttonStyle}>Pepsi</Button>
+          <Button variant="contained" sx={buttonStyle}>Marinda</Button>
+          <Button variant="contained" sx={buttonStyle}>Regular</Button>
+          <Button variant="contained" sx={buttonStyle}>NR</Button>
+          <Button variant="contained" sx={buttonStyle}>Murree</Button>
+          <Button variant="contained" sx={buttonStyle}>250ML Juice</Button>
+          <Button variant="contained" sx={buttonStyle}>Aquafina 500ML</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Special Pizza */}
+      {showSpecialPizza && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for special pizza
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Crown Crust</Button>
+          <Button variant="contained" sx={buttonStyle}>Stuffed Crust</Button>
+          <Button variant="contained" sx={buttonStyle}>Beef Pepperoni</Button>
+          <Button variant="contained" sx={buttonStyle}>Stuffed Cheese Pizza</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Pizza Deals */}
+      {showPizzaDeals && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for pizza deals
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Small Pizza Deal</Button>
+          <Button variant="contained" sx={buttonStyle}>Regular Pizza Deal</Button>
+          <Button variant="contained" sx={buttonStyle}>Large Pizza Deal</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Wraps */}
+      {showWraps && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(1, 1fr)',  // 1 column in the grid for wraps options
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Bazooka</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Burgerz */}
+      {showBurgerz && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for burgerz
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Reggy Burger</Button>
+          <Button variant="contained" sx={buttonStyle}>Bazinga</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Somewhat Sooper */}
+      {showSomewhatSooper && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',  // 3 columns in the grid for somewhat sooper
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Black Pepper Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Cheese Lover Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Chicken Mushroom Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Chicken Supreme Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Euro Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Pepperoni Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Sausage Pizza</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Cheezy Treats */}
+      {showCheezyTreats && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for cheezy treats
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Behari Kebab Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Cheezious Special Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Chicken Extreme Pizza</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+       {/* Nested Menu for Sweetness */}
+       {showSweetness && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for sweetness options
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={smallButtonStyle}>Chocolate Double Scoop IceCream</Button>
+          <Button variant="contained" sx={smallButtonStyle}>King Kulfa Double Scoop IceCream</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Mango Double Scoop IceCream</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Tutti Fruity Icecream Double Scoop Icecream</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Strawberry Double Scoop IceCream</Button>
+          <Button variant="contained" sx={smallButtonStyle}>Vanilla Double Scoop IceCream</Button>
+          <Button variant="contained" sx={smallButtonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Pasta */}
+      {showPasta && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for pasta
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Crunchy Chicken Pasta</Button>
+          <Button variant="contained" sx={buttonStyle}>Fettuccine Alfredo Pasta</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Somewhat Amazing */}
+      {showSomewhatAmazing && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for somewhat amazing deals
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={smallButtonStyle}>S.Amazing Deal-1 (2 Bazinga + Fries + 2 Drinks)</Button>
+          <Button variant="contained" sx={smallButtonStyle}>S.Amazing Deal-2 (2 Bazinga + Chic Pcs + Large Fries + 2 Drinks)</Button>
+          <Button variant="contained" sx={smallButtonStyle}>S.Amazing Deal-3 (3 Bazinga + Large Fries + 1L Drink)</Button>
+          <Button variant="contained" sx={smallButtonStyle}>S.Amazing Deal-4 (3 Bazinga + Chic Pcs + 1L Drink)</Button>
+          <Button variant="contained" sx={smallButtonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Somewhat Local */}
+      {showSomewhatLocal && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for somewhat local
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Chicken Fajita Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Chicken Lover Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Chicken Tandoori Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Chicken Tikka Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Hot n Spicy Pizza</Button>
+          <Button variant="contained" sx={buttonStyle}>Vegetable Pizza</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Sandwiches and Platters */}
+      {showSandwichesPlatters && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',  // 2 columns in the grid for sandwiches and platters
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Special Roasted Plater</Button>
+          <Button variant="contained" sx={buttonStyle}>Mexican Sandwich</Button>
+          <Button variant="contained" sx={buttonStyle}>Pizza Stacker</Button>
+          <Button variant="contained" sx={buttonStyle}>Classic Roll Plater</Button>
+          <Button variant="contained" sx={buttonStyle}>Euro Sandwich</Button>
+          <Button variant="contained" sx={buttonStyle}>Classic Roll Plater</Button>
+          <Button variant="contained" sx={buttonStyle}>Bihari Sandwich</Button>
+          <Button variant="contained" sx={buttonStyle}>Arabic Roll Plater</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+
+      {/* Nested Menu for Starters */}
+      {activeMenu === 'starters' && (
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 2,
+          mt: 0,
+          position: 'absolute',
+          left: 170,
+          top: 87,
+          zIndex: 1,
+        }}>
+          <Button variant="contained" sx={buttonStyle}>Arabic Spin Roll</Button>
+          <Button variant="contained" sx={buttonStyle}>Behari Spin Roll</Button>
+          <Button variant="contained" sx={buttonStyle}>Calzone Chunks</Button>
+          <Button variant="contained" sx={buttonStyle}>Cheezy Sticks</Button>
+          <Button variant="contained" sx={buttonStyle}>Flaming Wings 6pc</Button>
+          <Button variant="contained" sx={buttonStyle}>Flaming Wings 12pc</Button>
+          <Button variant="contained" sx={buttonStyle}>Lettuce (30 Grm)</Button>
+          <Button variant="contained" sx={buttonStyle}>Oven Baked Wings 12pc</Button>
+          <Button variant="contained" sx={buttonStyle}>Oven Baked Wings 6pc</Button>
+          <Button variant="contained" sx={buttonStyle} onClick={handlePreviousMenu}>Previous Menu</Button>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+export default Orders;
+
+//============================================================================
+
+import { useState } from "react"
+import { Box, Button, Typography } from "@mui/material"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
+import { menuCategories } from "./MenuData"
+import MainMenuGrid from "./MainMenuGrid"
+import MenuGrid from "./MenuGrid"
+import OrderTypeGrid from "./OrderTypeGrid"
+import OrderSummary from "./OrderSummary"
+
+const Orders = () => {
+  const [menuState, setMenuState] = useState({
+    showMenu: false,
+    orderType: null,
+    activeCategory: null,
+  })
+
+  // Add state for selected items
+  const [selectedItems, setSelectedItems] = useState([])
+
+  const handleToggleMenu = () => {
+    setMenuState({
+      showMenu: !menuState.showMenu,
+      orderType: null,
+      activeCategory: null,
+    })
+  }
+
+  const handleOrderTypeSelect = (orderType) => {
+    setMenuState({
+      ...menuState,
+      orderType: orderType,
+    })
+  }
+
+  const handleCategoryClick = (categoryId) => {
+    setMenuState({
+      ...menuState,
+      activeCategory: categoryId,
+    })
+  }
+
+  const handlePreviousMenu = () => {
+    setMenuState({
+      ...menuState,
+      orderType: null,
+    })
+  }
+
+  // Handle item selection
+  const handleItemSelect = (item) => {
+    const existingItem = selectedItems.find((i) => i.id === item.id)
+
+    if (existingItem) {
+      // If item exists, increment quantity
+      setSelectedItems(selectedItems.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)))
+    } else {
+      // If item doesn't exist, add it with quantity 1
+      setSelectedItems([...selectedItems, { ...item, quantity: 1 }])
+    }
+  }
+
+  // Handle clearing all items
+  const handleClearItems = () => {
+    setSelectedItems([])
+  }
+
+  // Handle deleting individual item
+  const handleDeleteItem = (itemId) => {
+    setSelectedItems(selectedItems.filter((item) => item.id !== itemId))
+  }
+
+  const buttonStyle = {
+    backgroundColor: "#FFA500",
+    width: 85,
+    height: 85,
+    padding: 0,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    wordWrap: "break-word",
+    whiteSpace: "normal",
+    fontSize: "0.75rem",
+  }
+
+  // Find the active category if one is selected
+  const activeCategory = menuState.activeCategory
+    ? menuCategories.find((cat) => cat.id === menuState.activeCategory)
+    : null
+
+  return (
+    <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: "#121212" }}>
+      {/* Menu Section */}
+      <Box sx={{ flex: 1, p: 3, color: "white", position: "relative" }}>
+        {/* Header */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
+          <Typography variant="h5">Orders</Typography>
+        </Box>
+
+        {/* Buttons in a Column Layout */}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, position: "relative", alignItems: "flex-start" }}>
+          <Button variant="contained" sx={buttonStyle} onClick={handleToggleMenu}>
+            Quick Menu
+          </Button>
+
+          {menuState.showMenu && (
+            <Box sx={{ display: "flex", justifyContent: "center", position: "absolute", left: 100, top: 25 }}>
+              <ArrowForwardIcon sx={{ fontSize: "2rem" }} />
+            </Box>
+          )}
+
+          <Button variant="contained" sx={buttonStyle}>
+            Actions
+          </Button>
+        </Box>
+
+        {/* Show Order Type Selection first */}
+        {menuState.showMenu && !menuState.orderType && <OrderTypeGrid onOrderTypeSelect={handleOrderTypeSelect} />}
+
+        {/* Show Categories after order type is selected */}
+        {menuState.showMenu && menuState.orderType && !menuState.activeCategory && (
+          <MainMenuGrid
+            categories={menuCategories}
+            onCategoryClick={handleCategoryClick}
+            onPreviousMenu={handlePreviousMenu}
+          />
+        )}
+
+        {/* Show Menu Items when category is selected */}
+        {menuState.showMenu && menuState.orderType && activeCategory && (
+          <MenuGrid
+            category={activeCategory}
+            onPreviousMenu={() => {
+              setMenuState({
+                ...menuState,
+                activeCategory: null,
+              })
+            }}
+            onItemClick={handleItemSelect}
+          />
+        )}
+      </Box>
+
+      {/* Order Summary Panel */}
+      <OrderSummary selectedItems={selectedItems} onClearItems={handleClearItems} onDeleteItem={handleDeleteItem} />
+    </Box>
+  )
+}
+
+export default Orders
+
